@@ -16,8 +16,6 @@ function ConvertTo-MP3 {
       ffmpeg.exe -y -i $file.Name -vn -ar 44100 -ac 2 -b:a 320k $target
       if ($Cleanup -and $(Test-Path -Path $target)){ 
         Remove-Item $file -Verbose
-      } else {
-        ffmpeg.exe -y -i $file.Name -vn -ar 44100 -ac 2 -b:a 320k "$($file.BaseName).mp3"
       }
     }
   } finally {
