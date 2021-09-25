@@ -12,9 +12,9 @@ function ConvertTo-MP3 {
   try {
     Set-Location $Path
     foreach ($file in $(Get-ChildItem -Exclude *.mp3)) {
-      $target = "$($file.BaseName).mp3"
+      $target = [Io.Fileinfo]"$($file.BaseName).mp3"
       ffmpeg.exe -y -i $file.Name -vn -ar 44100 -ac 2 -b:a 320k $target
-      if ($Cleanup -and $(Test-Path -Path $target)){ 
+      if ($Cleanup -and $(Get-ChildItem -Path . -Filter $target).Length -ne 0){ 
         Remove-Item $file -Verbose
       }
     }
