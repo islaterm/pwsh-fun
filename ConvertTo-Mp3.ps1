@@ -19,14 +19,14 @@ function ConvertTo-MP3
       {
         Write-Output ("$element is a directory, the program will proceed to convert the elements " `
             + 'inside the folder')
-        ConvertTo-MP3 -Cleanup -Path $element
+        ConvertTo-MP3 -Cleanup:$Cleanup -Path $element
       }
       else
       {
         Write-Output "Converting $element"
         $target = [Io.Fileinfo]"$($element.BaseName).mp3"
         ffmpeg.exe -y -i $element.Name -vn -ar 44100 -ac 2 -b:a 320k $target
-        if ($Cleanup -and $(Get-ChildItem -Path . -Filter $target).Length -ne 0)
+        if ($Cleanup -and ($target.Length -ne 0))
         { 
           Remove-Item $element -Verbose
         }
