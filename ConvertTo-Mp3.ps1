@@ -1,24 +1,40 @@
-function ConvertTo-MP3 {
+function ConvertTo-MP3
+{
   [CmdletBinding()]
   param (
-      [Parameter(Mandatory=$true)]
-      [string]
-      $Path,
-      [Alias("C")]
-      [switch]
-      $Cleanup
+    [Parameter(Mandatory = $true)]
+    [string]
+    $Path,
+    [Alias('C')]
+    [switch]
+    $Cleanup
   )
   $originalLocation = Get-Location
-  try {
+  try
+  {
     Set-Location $Path
-    foreach ($file in $(Get-ChildItem -Exclude *.mp3)) {
-      $target = [Io.Fileinfo]"$($file.BaseName).mp3"
-      ffmpeg.exe -y -i $file.Name -vn -ar 44100 -ac 2 -b:a 320k $target
-      if ($Cleanup -and $(Get-ChildItem -Path . -Filter $target).Length -ne 0){ 
-        Remove-Item $file -Verbose
+    foreach ($element in $(Get-ChildItem -Exclude *.mp3, *.txt, *.jpg, *.part))
+    {
+      if ($element -is [System.IO.DirectoryInfo])
+      {
+        Write-Output ("$element is a directory, the program will proceed to convert the elements " `
+            + 'inside the folder')
+        ConvertTo-MP3 -Cleanup -Path $element
+      }
+      else
+      {
+        Write-Output "Converting $element"
+        $target = [Io.Fileinfo]"$($element.BaseName).mp3"
+        ffmpeg.exe -y -i $element.Name -vn -ar 44100 -ac 2 -b:a 320k $target
+        if ($Cleanup -and $(Get-ChildItem -Path . -Filter $target).Length -ne 0)
+        { 
+          Remove-Item $element -Verbose
+        }
       }
     }
-  } finally {
+  }
+  finally
+  {
     Set-Location $originalLocation
   }
   <#
