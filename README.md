@@ -25,3 +25,22 @@ For any _x_ returns the **closest integer** that's **greater or equal** than _x_
 ```powershell
 Ceil [[-x] <Double>] [<CommonParameters>]
 ```
+
+## Invoke-GradleRun
+
+Invokes a `gradle run` Task and waits for it to finish it's execution.
+### SYNTAX
+
+```powershell
+Invoke-GradleRun [-Path] <String> [[-Arguments] <String[]>] [<CommonParameters>]
+```
+#### PARAMETERS 
+- ``Path``: The path to a folder containing a ``gradle.build`` or ``gradle.build.kts`` file.
+
+### EXAMPLE
+
+```powershell
+function Some-Function {
+  Invoke-GradleRun -Path 'C:\Some\Function\Path\GradleProject' $Args
+}
+```
