@@ -44,3 +44,34 @@ function Some-Function {
   Invoke-GradleRun -Path 'C:\Some\Function\Path\GradleProject' $Args
 }
 ```
+
+## Test-Command
+
+Checks if a command exists.
+
+### SYNTAX
+
+```powershell
+Test-Command [-Command] <String> [<CommonParameters>]
+```
+#### PARAMETERS
+```powershell
+-Command <String>
+  The name of the command to check.
+```
+
+#### Examples
+```powershell
+PS>Test-Command winget
+True
+```
+---
+```powershell
+PS>Test-Command julia
+False
+```
+---
+```powershell
+PS>'julia' | Test-Command
+False
+```
