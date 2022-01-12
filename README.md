@@ -62,16 +62,59 @@ Test-Command [-Command] <String> [<CommonParameters>]
 
 #### Examples
 ```powershell
-PS>Test-Command winget
+PS> Test-Command winget
 True
 ```
 ---
 ```powershell
-PS>Test-Command julia
+PS> Test-Command julia
 False
 ```
 ---
 ```powershell
-PS>'julia' | Test-Command
+PS> 'julia' | Test-Command
 False
+```
+
+## Test-Application
+
+Checks if an application is installed on the system.
+
+
+### SYNTAX
+```powershell
+Test-Application [[-Name] <String>] [<CommonParameters>]
+
+Test-Application [-DisplayName] <String> [<CommonParameters>]
+```
+
+### PARAMETERS
+
+```powershell
+-DisplayName <String>
+    The display name of the application.
+
+-Name <String>
+    The name of the process that identifies the application.
+```
+
+### Examples
+
+```powershell
+PS> Test-Application 'NVIDIA Web Helper.exe'
+# True if the service NVIDIA Web Helper is registered, False otherwise
+```
+
+---
+
+```powershell
+PS> Test-Application -Name '7-zip'
+# True if 7-zip is installed, false otherwise
+```
+
+---
+```powershell
+PS> Test-Application -DisplayName '3Tene'
+# True if 3Tene is installed, regardless of the installation method
+# (If using Steam this could have been registered with a 'Name' like Steam App XXXXXX)
 ```
