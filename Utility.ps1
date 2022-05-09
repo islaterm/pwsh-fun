@@ -102,7 +102,7 @@ function Set-RemoteSSH {
   )
   $keyPath = "$Env:USERPROFILE\.ssh\id_$Algorithm"
   ssh-keygen.exe -t $Algorithm -b $Size -f $keyPath
-  scp "$keyPath.pub" "${Url}:~/.ssh/id_$Algorithm.pub"
+  ssh $Url "mkdir -p ~/.ssh && cat ${Get-Content $keyPath} >> .ssh/authorized_keys"
   <#
     .SYNOPSIS
       Sets up an SSH key to a remote host like: user@hostname.
