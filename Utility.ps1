@@ -76,3 +76,44 @@ function Test-Application {
     # (If using Steam this could have been registered with a 'Name' like Steam App XXXXXX)
   #>
 }
+
+function Set-RemoteSSH {
+  param (
+    # The url of the host to register the key.
+    # The url should be in the form of:
+    #   user@hostname
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string]
+    $Url,
+    # The algorithm used to generate the key.
+    # Defaults to "rsa".
+    [Alias('a', 't')]
+    [string]
+    $Algorithm,
+    # The block size for the key.
+    # Defaults to 4096.
+    [Alias('b', 's')]
+    [int]
+    $Size
+  )
+  $keyPath = "$Env:USERPROFILE\.ssh\id_$Algorithm"
+  ssh-keygen.exe -t $Algorithm -b $Size -f $keyPath
+  scp "$keyPath.pub" "${Url}:~/.ssh/id_$Algorithm.pub"
+  <#
+    .SYNOPSIS
+      Sets up an SSH key to a remote host like: user@hostname.
+    .DESCRIPTION
+      This function will create a keypair and upload it to the specified host for the user defined 
+      in the url.
+    .EXAMPLE
+      # Creates a keypair and uploads it to user@hostname with the default algorithm.
+      Set-RemoteSSH user@hostname
+    .EXAMPLE
+      # Creates a keypair and uploads it to user@hostname with the algorithm "ed25519".
+      Set-RemoteSSH user@hostname -Algorithm ed25519
+    .EXAMPLE
+      # Creates a keypair and uploads it to user@hostname with the algorithm "ed25519" and a block 
+      # size of 4096.
+      Set-RemoteSSH user@hostname -Algorithm ed25519 -Size 4096
+  #>
+}
