@@ -77,6 +77,10 @@ function Test-Application {
   #>
 }
 
+$PSDefaultParameterValues = @{
+  "Set-RemoteSSH:Algorithm" = "rsa";
+  "Set-RemoteSSH:Size" = 4096
+}
 function Set-RemoteSSH {
   param (
     # The url of the host to register the key.
