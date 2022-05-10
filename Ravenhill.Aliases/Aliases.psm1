@@ -1,0 +1,1 @@
+Set-Alias -Name 'code' -Value 'code-insiders'
