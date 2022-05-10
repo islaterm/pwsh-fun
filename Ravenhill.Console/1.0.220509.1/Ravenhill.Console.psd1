@@ -4,7 +4,7 @@
     RootModule        = 'Ravenhill.Console.psm1';
 
     # Version number of this module.
-    ModuleVersion     = '1.0.220905.1'
+    ModuleVersion     = '1.0.220509.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
