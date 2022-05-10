@@ -1,5 +1,5 @@
 function Set-RemoteSSH {
-  [CmdletBinding(DefaultParameterSetName='AlgorithmRaw')]
+  [CmdletBinding(DefaultParameterSetName = 'AlgorithmRaw')]
   param (
     [Parameter(Mandatory = $true, Position = 0)]
     [string]
@@ -21,8 +21,8 @@ function Set-RemoteSSH {
     [int]
     $Size
   )
-  $Algorithm = $RSA -or -not $PSBoundParameters.ContainsKey('Algorithm') ? 'rsa' : `
-    $ECDSA ? 'ecdsa' : $ED25519 ? 'ed25519' : $Algorithm
+  $Algorithm = $ECDSA ? 'ecdsa' : $ED25519 ? 'ed25519' : `
+    $RSA -or -not $PSBoundParameters.ContainsKey('Algorithm') ? 'rsa' : $Algorithm
   if ($Algorithm -eq 'ecdsa' -and $(-not $(256, 384, 521) -contains $Size)) {
     throw "ECDSA key sizes must be one of 256, 384, or 521"
   }
@@ -93,7 +93,7 @@ function Set-RemoteSSH {
 function Set-LocationSwapDrive {
   [CmdletBinding()]
   param (
-    [Parameter(Mandatory=$true, Position=0)]
+    [Parameter(Mandatory = $true, Position = 0)]
     [string]
     $Drive
   )
