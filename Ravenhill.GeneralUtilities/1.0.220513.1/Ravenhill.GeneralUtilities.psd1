@@ -8,7 +8,7 @@
 RootModule = 'Ravenhill.GeneralUtilities.psm1';
 
 # Version number of this module.
-ModuleVersion = '1.0.220512.1'
+ModuleVersion = '1.0.220513.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -65,7 +65,7 @@ Copyright = '(c) R8V. All rights reserved.'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Set-DelayedHibernation')
+FunctionsToExport = @('Set-DelayedHibernation', 'Start-DelayedAction')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
