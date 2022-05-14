@@ -1,9 +1,52 @@
-# Pwsh-Fun
+# Pwsh-Fun (or the Functions I Use)
 
 Because PowerShell can be fun (at least that's what I tell myself).
-Here are some utility functions that can help you to use the Power of your Shell.
+Here are some utility functions that can help you to use the Power of your Shell (I can't believe I
+seriously wrote that).
 
-## ConvertTo-Mp3
+## Installation
+
+To use the modules from *Pwsh-Fun* you need to include the code from this repository in your 
+*PowerShell Modules* (or simply *Modules*) path.
+
+Let's first start by cloning the repository into an empty directory using your favorite cloning 
+method.
+I'd recommend using *GitHub CLI*:
+
+```bash
+gh repo clone r8vnhill/pwsh-fun
+```
+
+Now, with the repository cloned, we'll move the contents from the repo to the *Modules* path, in
+*PowerShell*:
+
+```powershell
+$PS_PROFILE_DIRECTORY = $(Get-Item $PROFILE).Directory.FullName
+if (-not $(Test-Path $PS_PROFILE_DIRECTORY)) {
+  New-Item -ItemType Directory -Force -Path $PS_PROFILE_DIRECTORY
+}
+Move-Item -Path .\pwsh-fun\* -Destination "$PS_PROFILE_DIRECTORY\Modules\"
+Remove-Item -Path .\pwsh-fun -Force -Recurse
+```
+
+This will make the modules accessible to *PowerShell*, you must start a new console to see the 
+changes.
+
+## Updating the Modules
+
+Since we copied all the repository's contents in the previous step, the *Modules* directory is now
+the root of the repository.
+The repo is configured to only track the directories which name starts with ``Ravenhill.``, so every
+change you do on other files or directories will be ignored by *Git*, this will allow you to update
+the modules easily by simply doing ``git pull`` on the *Modules* root.
+
+## Modules Documentation
+
+This repository is organized as multiple directories (*Modules*) grouping the commands according
+to their functionality.
+Each module has it's own ``README.md`` file explaining the contained commands.
+
+<!-- ## ConvertTo-Mp3
 
 Converts a list of files to mp3.
 
@@ -117,4 +160,4 @@ PS> Test-Application -Name '7-zip'
 PS> Test-Application -DisplayName '3Tene'
 # True if 3Tene is installed, regardless of the installation method
 # (If using Steam this could have been registered with a 'Name' like Steam App XXXXXX)
-```
+``` -->
