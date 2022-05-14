@@ -1,34 +1,39 @@
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
 
-function Set-DelayedHibernation {
+function Start-DelayedHibernation {
   param (
+    # the time in minutes the system will wait before start hibernating.
     [Parameter(Mandatory = $true)]
-    [int]
-    $Delay
+    [double]
+    $Minutes
   )
-  $powerState = [System.Windows.Forms.PowerState]::Hibernate
-  $delayInSeconds = $delay * 60
-  Start-Sleep -s $delayInSeconds
-  [System.Windows.Forms.Application]::SetSuspendState($powerState, $true, $false)
+  Start-DelayedAction -Name 'DelayedHibernation' -Delay $Minutes -Action {
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
+    $powerState = [System.Windows.Forms.PowerState]::Hibernate
+    [System.Windows.Forms.Application]::SetSuspendState($powerState, $true, $false)
+  }
   <#
     .SYNOPSIS
       Puts the PC into hibernation state.
     .DESCRIPTION  
-      Turns the PC in hibernation mode after a certain delay.
-    .PARAMETER delay
-      the time in seconds the system will wait before start hibernating.
+      Turns the PC into hibernation mode after a certain delay.
     .NOTES
-      This command will freeze the console, if you want it to run in the background, you'll have to 
-      run it in a separate process.
+      Times lower than 1 minute can be represented as fractions.
   #>
 }
 
 
-function Set-DelayedSleep ([double] $delay) {
-  $powerState = [System.Windows.Forms.PowerState]::SetSuspendState
-  $delayInSeconds = $delay * 60
-  Start-Sleep -s $delayInSeconds
-  [System.Windows.Forms.Application]::SetSuspendState($powerState, $true, $false)
+function Start-DelayedSleep {
+  param (
+    [Parameter(Mandatory = $true)]
+    [double]
+    $Delay
+  )
+  Start-DelayedAction -Name 'DelayedSleep' -Delay $Delay -Action {
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
+    $powerState = [System.Windows.Forms.PowerState]::Suspend
+    [System.Windows.Forms.Application]::SetSuspendState($powerState, $true, $false)
+  }
   <#
     .SYNOPSIS
       Puts the PC into hibernation state.
@@ -39,10 +44,13 @@ function Set-DelayedSleep ([double] $delay) {
   #>
 }
 
-function Set-DelayedShutdown ([double] $delay) {
-  $delayInSeconds = $delay * 60
-  Start-Sleep -s $delayInSeconds
-  Stop-Computer -Force
+function Start-DelayedShutdown {
+  param (
+    [Parameter(Mandatory = $true)]
+    [double]
+    $Delay
+  )
+  Start-DelayedAction -Name 'DelayedShutdown' -Delay $Delay -Action { Stop-Computer -Force }
   <#
     .SYNOPSIS
       Turns off the pc.

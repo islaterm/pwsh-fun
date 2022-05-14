@@ -2,35 +2,6 @@
 
 General purpose commands.
 
-## Set-DelayedHibernation
-
-Puts the PC into hibernation state.
-
-Turns the PC in hibernation mode after a certain delay.
-
-### SYNTAX
-
-```powershell
-Set-DelayedHibernation [-Delay] <Int32> [<CommonParameters>]
-```
-
-### PARAMETERS
-- `Delay <Int32>` - the time in seconds the system will wait before start hibernating.
-  
-  |                             |       |
-  | --------------------------- | ----- |
-  | Required?                   | true  |
-  | Position?                   | 1     |
-  | Default value               | 0     |
-  | Accept pipeline input?      | false |
-  | Accept wildcard characters? | false |
-
-### NOTES
-
-This command will freeze the console, if you want it to run in the background,
-you'll have to
-run it in a separate process.
-
 ## Start-DelayedAction
 
 Starts a job after a certain delay.
@@ -79,11 +50,45 @@ This command will start a background job.
 
 ### EXAMPLES
 ```powershell
-  PS>Start-DelayedAction -Name "MyJob" -Delay 5 -Action {
-  PS>   Write-Host "Hello World"
-  PS> }
-  PS> # After five minutes, the job will run and print "Hello World", then you can get the process
-  PS> # output by running Get-Job -Name "MyJob"
-  PS> Receive-Job -Name "MyJob"
-  Hello World
-  ```
+PS> Start-DelayedAction -Name "MyJob" -Delay 5 -Action {
+PS>   Write-Host "Hello World"
+PS> }
+PS> # After five minutes, the job will run and print "Hello World", then you can get the process
+PS> # output by running Get-Job -Name "MyJob"
+PS> Receive-Job -Name "MyJob"
+Hello World
+```
+
+## Set-DelayedHibernation
+
+Puts the PC into hibernation state.
+
+> Turns the PC into hibernation mode after a certain delay.
+
+### SYNTAX
+
+```powershell
+Start-DelayedHibernation [-Minutes] <Double> [<CommonParameters>]
+```
+
+### SYNTAX
+
+```powershell
+Set-DelayedHibernation [-Delay] <Int32> [<CommonParameters>]
+```
+
+### PARAMETERS
+
+- `Minutes <Double>` - the time in minutes the system will wait before start hibernating.
+  
+  |                             |       |
+  | --------------------------- | ----- |
+  | Required?                   | true  |
+  | Position?                   | 1     |
+  | Default value               | 0     |
+  | Accept pipeline input?      | false |
+  | Accept wildcard characters? | false |
+
+### NOTES
+
+Times lower than 1 minute can be represented as fractions.
