@@ -59,7 +59,7 @@ PS> Receive-Job -Name "MyJob"
 Hello World
 ```
 
-## Set-DelayedHibernation
+## Start-DelayedHibernation
 
 Puts the PC into hibernation state.
 
@@ -69,12 +69,6 @@ Puts the PC into hibernation state.
 
 ```powershell
 Start-DelayedHibernation [-Minutes] <Double> [<CommonParameters>]
-```
-
-### SYNTAX
-
-```powershell
-Set-DelayedHibernation [-Delay] <Int32> [<CommonParameters>]
 ```
 
 ### PARAMETERS
