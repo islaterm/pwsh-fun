@@ -22,8 +22,8 @@ Now, with the repository cloned, we'll move the contents from the repo to the *M
 
 ```powershell
 $PS_PROFILE_DIRECTORY = $(Get-Item $PROFILE).Directory.FullName
-if (-not $(Test-Path $PS_PROFILE_DIRECTORY)) {
-  New-Item -ItemType Directory -Force -Path $PS_PROFILE_DIRECTORY
+if (-not $(Test-Path $PS_PROFILE_DIRECTORY\Modules)) {
+  New-Item -ItemType Directory -Force -Path $PS_PROFILE_DIRECTORY\Modules
 }
 Move-Item -Path .\pwsh-fun\* -Destination "$PS_PROFILE_DIRECTORY\Modules\"
 Remove-Item -Path .\pwsh-fun -Force -Recurse
