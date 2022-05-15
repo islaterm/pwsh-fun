@@ -1,5 +1,10 @@
 # Pwsh-Fun (or the Functions I Use)
 
+![http://creativecommons.org/licenses/by/4.0/](https://i.creativecommons.org/l/by/4.0/88x31.png)
+
+This work is licensed under a
+[Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/)
+
 Because PowerShell can be fun (at least that's what I tell myself).
 Here are some utility functions that can help you to use the Power of your Shell (I can't believe I
 seriously wrote that).
