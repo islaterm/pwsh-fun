@@ -19,21 +19,6 @@ Sets an environment variable.
 
 > Sets a new or existing environment variable as a key-value pair with a given scope.
 
-    -------------------------- EXAMPLE 1 --------------------------
-
-    PS>Set-EnvironmentVariable -Machine -Key "MyKey" -Value "MyValue"
-    PS> Update-SessionEnvironment
-    PS> Write-Host "MyKey: $env:MyKey"
-    MyKey: MyValue
-
-
-
-
-
-
-    -------------------------- EXAMPLE 2 --------------------------
-
-    PS>Get-Location | Set-EnvironmentVariable -User -Key "DEV_WORKSPACE"
 ### SYNTAX
   
 ```powershell
