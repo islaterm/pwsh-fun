@@ -2,6 +2,20 @@
 
 General purpose commands.
 
+## Table of Contents
+
+- [Ravenhill.GeneralUtilities](#ravenhillgeneralutilities)
+  - [Table of Contents](#table-of-contents)
+  - [Start-DelayedAction](#start-delayedaction)
+    - [SYNTAX](#syntax)
+    - [PARAMETERS](#parameters)
+    - [NOTES](#notes)
+    - [EXAMPLES](#examples)
+  - [Start-DelayedHibernation / Start-DelayedSleep](#start-delayedhibernation--start-delayedsleep)
+    - [SYNTAX](#syntax-1)
+    - [PARAMETERS](#parameters-1)
+    - [NOTES](#notes-1)
+
 ## Start-DelayedAction
 
 Starts a job after a certain delay.
@@ -59,16 +73,18 @@ PS> Receive-Job -Name "MyJob"
 Hello World
 ```
 
-## Start-DelayedHibernation
+## Start-DelayedHibernation / Start-DelayedSleep
 
-Puts the PC into hibernation state.
+Puts the PC into hibernation/sleep state.
 
-> Turns the PC into hibernation mode after a certain delay.
+> Turns the PC into hibernation/sleep mode after a certain delay.
 
 ### SYNTAX
 
 ```powershell
 Start-DelayedHibernation [-Minutes] <Double> [<CommonParameters>]
+
+Start-DelayedSleep [-Minutes] <Double> [<CommonParameters>]
 ```
 
 ### PARAMETERS
@@ -84,5 +100,7 @@ Start-DelayedHibernation [-Minutes] <Double> [<CommonParameters>]
   | Accept wildcard characters? | false |
 
 ### NOTES
+
+This command will start a background job.
 
 Times lower than 1 minute can be represented as fractions.

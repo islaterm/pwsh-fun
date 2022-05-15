@@ -8,7 +8,7 @@
 RootModule = 'Ravenhill.GeneralUtilities.psm1';
 
 # Version number of this module.
-ModuleVersion = '1.0.220513.3'
+ModuleVersion = '1.0.220513.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()

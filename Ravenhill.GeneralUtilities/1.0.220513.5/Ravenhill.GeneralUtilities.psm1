@@ -7,7 +7,7 @@ function Start-DelayedHibernation {
     [double]
     $Minutes
   )
-  Start-DelayedAction -Name 'DelayedHibernation' -Delay $Minutes -Action {
+  Start-DelayedAction -Name 'DelayedHibernation' -Minutes $Minutes -Action {
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
     $powerState = [System.Windows.Forms.PowerState]::Hibernate
     [System.Windows.Forms.Application]::SetSuspendState($powerState, $true, $false)
@@ -25,39 +25,41 @@ function Start-DelayedHibernation {
 
 function Start-DelayedSleep {
   param (
+    # the time in minutes the system will wait before start sleeping.
     [Parameter(Mandatory = $true)]
     [double]
-    $Delay
+    $Minutes
   )
-  Start-DelayedAction -Name 'DelayedSleep' -Delay $Delay -Action {
+  Start-DelayedAction -Name 'DelayedSleep' -Minutes $Minutes -Action {
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
     $powerState = [System.Windows.Forms.PowerState]::Suspend
     [System.Windows.Forms.Application]::SetSuspendState($powerState, $true, $false)
   }
   <#
     .SYNOPSIS
-      Puts the PC into hibernation state.
+      Puts the PC into sleep mode.
     .DESCRIPTION  
-      Turns the PC in hibernation mode after a certain delay
-    .PARAMETER delay
-      the time in seconds the system will wait before start hibernating
+      Turns the PC into sleep mode after a certain delay.
+    .NOTES
+      This function creates a background job to hold the timer.
   #>
 }
 
 function Start-DelayedShutdown {
   param (
+    # the delay in minutes that the computer will wait before turning off.
     [Parameter(Mandatory = $true)]
     [double]
-    $Delay
+    $Minutes
   )
-  Start-DelayedAction -Name 'DelayedShutdown' -Delay $Delay -Action { Stop-Computer -Force }
+  Start-DelayedAction -Name 'DelayedShutdown' -Minutes $Minutes -Action { Stop-Computer -Force }
   <#
     .SYNOPSIS
       Turns off the pc.
     .DESCRIPTION  
-      Shuts down the pc after a certain delay
-    .PARAMETER delay
-      the time in seconds the system will wait before shutting down
+      Shuts down the pc after a certain delay.
+    .NOTES
+      This function creates a background job to hold the timer.
   #>
 }
 
@@ -70,13 +72,13 @@ function Start-DelayedAction {
     # The delay in minutes
     [Parameter(Mandatory = $true)]
     [double]
-    $Delay,
+    $Minutes,
     # The command to run
     [Parameter(Mandatory = $true)]
     [scriptblock]
     $Action
   )
-  Start-Job -Name $Name -ArgumentList $Delay, $Action -ScriptBlock {
+  Start-Job -Name $Name -ArgumentList $Minutes, $Action -ScriptBlock {
     Start-Sleep -Seconds $($Args[0] * 60)
     [scriptblock]$script = [scriptblock]::Create($Args[1])
     Invoke-Command -ScriptBlock $script
