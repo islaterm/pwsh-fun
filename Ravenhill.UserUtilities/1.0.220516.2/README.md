@@ -11,11 +11,12 @@ User utility commands for PowerShell.
     - [PARAMETERS](#parameters)
     - [NOTES](#notes)
     - [EXAMPLES](#examples)
-  - [Get-HomeDirectory (~) / Set-HomeDirectory](#get-homedirectory---set-homedirectory)
+  - [Get-HomeDirectory / Set-HomeDirectory](#get-homedirectory--set-homedirectory)
     - [SYNTAX](#syntax-1)
     - [PARAMETERS](#parameters-1)
     - [INPUTS](#inputs)
     - [OUTPUTS](#outputs)
+    - [NOTES (Set-HomeDirectory)](#notes-set-homedirectory)
     - [EXAMPLES](#examples-1)
 
 
@@ -105,7 +106,7 @@ PS> # Note the order of the parameters in this call since it's using positional 
 PS> ls | setenv 'DEV_WORKSPACE' -u # This yields the same result as the previous example
 ```
 
-## Get-HomeDirectory (~) / Set-HomeDirectory
+## Get-HomeDirectory / Set-HomeDirectory
 
 Get/Set the home directory of the current user.
 
@@ -140,6 +141,10 @@ Get-HomeDirectory [<CommonParameters>]
 
 **Get:** The path to the home directory.
 
+### NOTES (Set-HomeDirectory)
+This action will override the default values of `$HOME` and `~`, be wary that this change has 
+unpredictable side effects with other modules that depend on these values.
+This DOES NOT change the user profile location (`$Env:USERPROFILE`).
 ### EXAMPLES
 
 ```powershell	

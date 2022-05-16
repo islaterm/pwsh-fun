@@ -85,9 +85,23 @@ function Set-HomeDirectory {
     # The path to the home directory to set.
     [Parameter(Mandatory = $true, Position = 0)]
     [string]
-    $Path 
+    $Path,
+    # Bypass confirmation prompt. 
+    [switch]
+    $Confirm
   )
-  $Path | Set-EnvironmentVariable -User -Key $HOME_DIR_KEY
+  if (-not $Confirm) {
+    $Choices = '&Yes', '&No'
+    $Decision = $Host.UI.PromptForChoice('Warning', 
+      'This will override the default values of $HOME and `~`', $Choices, 1)
+  } else {
+    $Decision = 0
+  }
+  if ($Decision -eq 0) {
+    $Path | Set-EnvironmentVariable -Key $HOME_DIR_KEY -User
+    (Get-PSProvider FileSystem).Home = $Path
+    Update-SessionEnvironment
+  }
   <#
   .SYNOPSIS
     Sets the home directory of the current user.
@@ -96,6 +110,10 @@ function Set-HomeDirectory {
     of the current user.
   .INPUTS
     The path to the home directory.
+  .NOTES
+    This action will override the default values of $HOME and `~`, be wary that this change has 
+    unpredictable side effects with other modules that depend on these values.
+    This DOES NOT change the user profile location (`$Env:USERPROFILE`).
   .EXAMPLE
     PS> Set-HomeDirectory -Path "C:\Users\MyUser"
     PS> Get-HomeDirectory
@@ -129,4 +147,3 @@ function Get-HomeDirectory {
     Set-HomeDirectory
   #>
 }
-Set-Alias -Name ~ -Value Get-HomeDirectory
