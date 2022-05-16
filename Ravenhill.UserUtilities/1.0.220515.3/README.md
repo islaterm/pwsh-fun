@@ -6,14 +6,14 @@ User utility commands for PowerShell.
 
 - [Ravenhill.UserUtilities](#ravenhilluserutilities)
   - [Table of Contents](#table-of-contents)
-  - [Set-EnvironmentVariable](#set-environmentvariable)
+  - [Set-EnvironmentVariable (seetenv)](#set-environmentvariable-seetenv)
     - [SYNTAX](#syntax)
     - [PARAMETERS](#parameters)
     - [NOTES](#notes)
     - [EXAMPLES](#examples)
 
 
-## Set-EnvironmentVariable
+## Set-EnvironmentVariable (seetenv)
 
 Sets an environment variable.
 
@@ -51,6 +51,7 @@ Set-EnvironmentVariable -Value <String> -Key <String> -Machine [<CommonParameter
 
 - ``User [<SwitchParameter>]`` - Designates the current user as the owner of the environment 
   variable.
+  Alias: `u`
   
 |                             |       |
 | --------------------------- | ----- |
@@ -62,6 +63,7 @@ Set-EnvironmentVariable -Value <String> -Key <String> -Machine [<CommonParameter
     
 - ``Machine [<SwitchParameter>]`` - Designates the current machine as the owner of the environment 
   variable.
+  Alias: `m`
   
 |                             |       |
 | --------------------------- | ----- |
@@ -90,4 +92,9 @@ PS> Set-EnvironmentVariable -Machine -Key "MyKey" -Value "MyValue"
 
 ```powershell
 PS> Get-Location | Set-EnvironmentVariable -User -Key "DEV_WORKSPACE"
+```
+
+```powershell
+PS> # Note the order of the parameters in this call since it's using positional values
+PS> ls | setenv 'DEV_WORKSPACE' -u # This yields the same result as the previous example
 ```
