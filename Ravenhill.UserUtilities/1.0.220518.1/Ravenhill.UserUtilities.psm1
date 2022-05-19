@@ -30,11 +30,13 @@ function Set-EnvironmentVariable {
   else {
     throw "Invalid scope" # This line is unreachable on purpose.
   }
+  Update-SessionEnvironment
   <#
   .SYNOPSIS
     Sets an environment variable.
   .DESCRIPTION
     Sets a new or existing environment variable as a key-value pair with a given scope.
+    Then, the session is updated to reflect the changes.
   .INPUTS
     A string representable value of the environment variable to set.
   .EXAMPLE

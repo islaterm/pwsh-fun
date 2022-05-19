@@ -25,6 +25,7 @@ User utility commands for PowerShell.
 Sets an environment variable.
 
 > Sets a new or existing environment variable as a key-value pair with a given scope.
+> Then, the session is updated to reflect the changes.
 
 ### SYNTAX
   
