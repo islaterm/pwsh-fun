@@ -12,7 +12,7 @@
   RootModule        = 'Ravenhill.FileUtils.psm1'
 
   # Version number of this module.
-  ModuleVersion     = '1.1.220516.1'
+  ModuleVersion     = '1.1.220517.1'
 
   # ID used to uniquely identify this module
   GUID              = '7cc0736f-5c85-48a9-b9d2-19bec5fdd433'
@@ -32,7 +32,7 @@
   Description       = 'Commands to enhance functionalities for files and directories for ' + `
     'PowerShell.'
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-  # ScriptsToProcess = @()
+  ScriptsToProcess = @('FileUtils.Setup.ps1')
 
   # Type files (.ps1xml) to be loaded when importing this module
   # TypesToProcess = @()
@@ -44,7 +44,7 @@
   # NestedModules = @()
 
   # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-  FunctionsToExport = @('Remove-EmptyDirectories')
+  FunctionsToExport = @('Remove-EmptyDirectories', 'ConvertTo-Jpeg')
 
   # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
   CmdletsToExport   = @()
