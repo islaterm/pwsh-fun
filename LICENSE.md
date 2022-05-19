@@ -142,7 +142,6 @@ Licensed Material available under these terms and conditions.
      exercise the Licensed Rights in the Licensed Material to:
     1. reproduce and Share the Licensed Material, in whole or
        in part; and
-
     2. produce, reproduce, and Share Adapted Material.
 
   2. Exceptions and Limitations. For the avoidance of doubt, where
