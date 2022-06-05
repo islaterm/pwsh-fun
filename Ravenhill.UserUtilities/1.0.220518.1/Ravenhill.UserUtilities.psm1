@@ -149,3 +149,5 @@ function Get-HomeDirectory {
     Set-HomeDirectory
   #>
 }
+
+# TODO Add to path

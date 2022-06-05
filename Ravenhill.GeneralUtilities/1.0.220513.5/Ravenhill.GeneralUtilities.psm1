@@ -1,5 +1,3 @@
-[void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") 
-
 function Start-DelayedHibernation {
   param (
     # the time in minutes the system will wait before start hibernating.
@@ -100,3 +98,35 @@ function Start-DelayedAction {
     This command will start a background job.
   #>
 }
+
+function Get-TSRandom($hi) {
+  $r1 = $(Get-Random $hi) + 1
+  $r2 = $(Get-Random $hi) + 1 
+  return $r1 -ge $r2 ? $r2 : $r1
+}
+
+function Get-RandomBetween {
+  param (
+      [Parameter(Mandatory=$true)]
+      [int]
+      $A,
+      [Parameter(Mandatory=$true)]
+      [int]
+      $B
+  )
+  if ($A -gt $B) {
+    $temp = $A
+    $A = $B
+    $B = $temp
+  }
+  Get-Random -Maximum $B -Minimum $A
+  <#
+  .SYNOPSIS
+    Returns a bounded random number with uniform distribution.
+  .PARAMETER Minimum
+    Lower bound.
+  .PARAMETER Maximum
+    Upper bound.
+  #>
+}
+Set-Alias -Name rand -Value Get-RandomBetween
