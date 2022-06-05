@@ -99,12 +99,15 @@ function Start-DelayedAction {
   #>
 }
 
+# TODO: Rename
+# TODO: Iterations
 function Get-TSRandom($hi) {
   $r1 = $(Get-Random $hi) + 1
   $r2 = $(Get-Random $hi) + 1 
   return $r1 -ge $r2 ? $r2 : $r1
 }
 
+# TODO: select boundary type
 function Get-RandomBetween {
   param (
       [Parameter(Mandatory=$true)]
@@ -129,4 +132,3 @@ function Get-RandomBetween {
     Upper bound.
   #>
 }
-Set-Alias -Name rand -Value Get-RandomBetween
