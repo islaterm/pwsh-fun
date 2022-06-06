@@ -110,3 +110,41 @@ function ConvertTo-Jpeg {
   #   }
   # }
 }
+
+function ConvertTo-Icon {
+  param (
+    # The path to the image file(s) to convert
+    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+    [String[]]
+    $Files
+  )
+  if (Test-Command -Command magick) {
+    Get-ChildItem $Files | ForEach-Object {
+      $baseName = $_.BaseName
+      Write-Verbose "Converting $_ to $baseName.ico"
+      $exe = 'magick.exe'
+      $arguments = @('convert', '-background', 'none', '-resize' , '256x256', '-density'. '256x256', 
+        $_, "$baseName.ico")
+      if ($Verbose) {
+        $arguments += '-verbose'
+      }
+      & $exe $arguments
+    }
+  }
+  else {
+    Write-Error 'This command requires ImageMagick. You can install it with "winget install ' + `
+      'ImageMagick.ImageMagick'
+  }
+  <#
+  .SYNOPSIS
+    Converts image files to the widely-supported ICO format.
+  .DESCRIPTION
+    This command converts image files to ICO format.
+    The image files are converted to the ICO format using ImageMagick.
+    If ImageMagick is not installed, this command will fail.
+  .EXAMPLE
+    PS> ConvertTo-Icon 'C:\My Pictures\*.jpg'
+  .NOTES
+    This command requires ImageMagick. You can install it with "winget install ImageMagick.ImageMagick"
+  #>
+}
