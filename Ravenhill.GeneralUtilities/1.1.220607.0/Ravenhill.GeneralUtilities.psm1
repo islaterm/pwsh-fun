@@ -99,23 +99,57 @@ function Start-DelayedAction {
   #>
 }
 
-# TODO: Rename
-# TODO: Iterations
-function Get-TSRandom($hi) {
-  $r1 = $(Get-Random $hi) + 1
-  $r2 = $(Get-Random $hi) + 1 
-  return $r1 -ge $r2 ? $r2 : $r1
+function Get-TournamentSelectionRandom {
+  param (
+    # The upper bound of the random number (inclusive)    
+    [Parameter(Mandatory = $true, Position = 0)]
+    [Alias('hi')]
+    [Int]
+    $UpperBound,
+    # The lower bound of the random number (defaults to 0)
+    [Parameter(Position = 1)]
+    [Alias('lo')]
+    [Int]
+    $LowerBound = 0,
+    # The number of candidates from which to select (defaults to 2)
+    [Parameter(Position = 2)]
+    [Alias('n')]
+    [Int]
+    $Candidates = 2
+  )
+  if ($Candidates -lt 2) {
+    throw "The number of candidates must be at least 2."
+  }
+  else {
+    $best = Get-RandomBetween $LowerBound $UpperBound
+    for ($i = 1; $i -lt $Candidates; $i++) {
+      $best = [int]::Min($best, (Get-RandomBetween $LowerBound $UpperBound))
+    }
+    return $best
+  }
+  <#
+  .SYNOPSIS
+    Returns a random number between the lower and upper bounds prioritizing lower values.
+  .DESCRIPTION
+    Generates a given number of random numbers between the lower and upper bounds and returns the
+    one closest to the lower bound.
+  .EXAMPLE
+    PS> Get-TournamentSelectionRandom -UpperBound 10 -Candidates 3
+  .NOTES
+    The bigger the number of candidates, the more likely the lower bound will be chosen.
+  #>
 }
+Set-Alias -Name 'tsrand' -Value Get-TournamentSelectionRandom
 
 # TODO: select boundary type
 function Get-RandomBetween {
   param (
-      [Parameter(Mandatory=$true)]
-      [int]
-      $A,
-      [Parameter(Mandatory=$true)]
-      [int]
-      $B
+    [Parameter(Mandatory = $true)]
+    [int]
+    $A,
+    [Parameter(Mandatory = $true)]
+    [int]
+    $B
   )
   if ($A -gt $B) {
     $temp = $A
