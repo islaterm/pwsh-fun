@@ -130,7 +130,7 @@ Get-TournamentSelectionRandom [-UpperBound] <Int32> [[-LowerBound] <Int32>] [[-C
 | Accept pipeline input?      | false |
 | Accept wildcard characters? | false |
 
-- `LowerBound <Int32>` - The lower bound of the random number (defaults to 0)
+- `LowerBound <Int32>` - The lower bound of the random number (defaults to 1; inclusive)
 
 |                             |       |
 | --------------------------- | ----- |

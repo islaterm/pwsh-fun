@@ -106,11 +106,11 @@ function Get-TournamentSelectionRandom {
     [Alias('hi')]
     [Int]
     $UpperBound,
-    # The lower bound of the random number (defaults to 0)
+    # The lower bound of the random number (defaults to 1; inclusive)
     [Parameter(Position = 1)]
     [Alias('lo')]
     [Int]
-    $LowerBound = 0,
+    $LowerBound = 1,
     # The number of candidates from which to select (defaults to 2)
     [Parameter(Position = 2)]
     [Alias('n')]
