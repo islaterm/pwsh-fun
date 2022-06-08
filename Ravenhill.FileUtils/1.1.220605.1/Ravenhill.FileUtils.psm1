@@ -116,7 +116,11 @@ function ConvertTo-Icon {
     # The path to the image file(s) to convert
     [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
     [String[]]
-    $Files
+    $Files,
+    # The path to the output icon file
+    [Alias('Output', 'o')]
+    [String]
+    $OutputIconFile
   )
   if (Test-Command -Command magick) {
     Get-ChildItem $Files | ForEach-Object {
@@ -124,10 +128,11 @@ function ConvertTo-Icon {
       Write-Verbose "Converting $_ to $baseName.ico"
       $exe = 'magick.exe'
       $arguments = @('convert', '-background', 'none', '-resize' , '256x256', '-density'. '256x256', 
-        $_, "$baseName.ico")
+        $_, ($PSBoundParameters.ContainsKey('OutputIconFile') ? $OutputIconFile : "$baseName.ico"))
       if ($Verbose) {
         $arguments += '-verbose'
       }
+      Write-Verbose "Running: $exe $arguments"
       & $exe $arguments
     }
   }
