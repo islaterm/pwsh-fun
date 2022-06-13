@@ -1,9 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+title: "[FR] I think this feature should be implemented"
+labels: enhancement
+assignees: r8vnhill
 
 ---
 
