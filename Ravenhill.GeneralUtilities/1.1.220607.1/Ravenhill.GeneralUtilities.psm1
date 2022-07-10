@@ -123,7 +123,7 @@ function Get-TournamentSelectionRandom {
   else {
     $best = Get-RandomBetween $LowerBound $UpperBound
     for ($i = 1; $i -lt $Candidates; $i++) {
-      $best = [int]::Min($best, (Get-RandomBetween $LowerBound $UpperBound))
+      $best = [System.Math]::Min($best, (Get-RandomBetween $LowerBound $UpperBound))
     }
     return $best
   }
