@@ -100,3 +100,10 @@ function Start-DelayedAction {
     This command will start a background job.
   #>
 }
+
+# Get-ChildItem $dir -Directory | ForEach-Object { 
+#   New-Object psobject -Property @{
+#     Name = $_.Name; 
+#     Size = (Get-ChildItem -Path $_ -Recurse -File | Measure-Object -Property Length -Sum).Sum 
+#   } 
+# } | Sort-Object -Property @{ Expression = "Size"; Descending = "True" } | Format-Table Name,Size
