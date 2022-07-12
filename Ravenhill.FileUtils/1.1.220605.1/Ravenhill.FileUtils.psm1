@@ -115,30 +115,42 @@ function ConvertTo-Icon {
   param (
     # The path to the image file(s) to convert
     [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-    [String[]]
+    [string[]]
     $Files,
-    # The path to the output icon file
-    [Alias('Output', 'o')]
-    [String]
-    $OutputIconFile
+    # The path to the output icon file(s)
+    [string[]]
+    $OutputFiles,
+    # The size of the icon in pixels, defaults to 256x256
+    [Alias('IconSize', 's')]
+    [string]
+    $Size = '256x256'
   )
-  if (Test-Command -Command magick) {
-    Get-ChildItem $Files | ForEach-Object {
-      $baseName = $_.BaseName
-      Write-Verbose "Converting $_ to $baseName.ico"
-      $exe = 'magick.exe'
-      $arguments = @('convert', '-background', 'none', '-resize' , '256x256', '-density'. '256x256', 
-        $_, ($PSBoundParameters.ContainsKey('OutputIconFile') ? $OutputIconFile : "$baseName.ico"))
-      if ($Verbose) {
-        $arguments += '-verbose'
-      }
-      Write-Verbose "Running: $exe $arguments"
-      & $exe $arguments
+  Test-Regex -Test $Size -Pattern '^\d+x\d+$' `
+    -FailureMessage "The icon size must be in the format '<width>x<height>'"
+  $outputFilesExist = $OutputFiles.Length -ne 0
+  if ($outputFilesExist -and $OutputFiles.Length -ne $Files.Length) {
+    throw "The number of files to convert must match the number of output files."
+  }
+  if (-not (Test-Command -Command magick)) {
+    Request-Confirmation -Caption 'Warning' `
+      -Message 'This command requires ImageMagick. Would you like to install it?' -IfTrue { 
+      winget.exe install ImageMagick.ImageMagick
+      Update-SessionEnvironment 
     }
   }
-  else {
-    Write-Error 'This command requires ImageMagick. You can install it with "winget install ' + `
-      'ImageMagick.ImageMagick'
+  for ($i = 0; $i -lt $Files.Count; $i++) {
+    $File = Get-Item $Files[$i]
+    $baseName = $outputFilesExist ? $OutputFiles[$i] : $File
+    Write-Verbose "Converting $File to $baseName.ico"
+    $exe = 'magick.exe'
+    [System.Collections.ArrayList]$arguments = @('convert')
+    if (Test-Verbose($PSCmdlet)) {
+      $arguments.Add('-verbose')
+    }
+    $arguments.AddRange( @('-background', 'none', '-resize' , $Size, '-density', $Size, 
+        "`"$File`"", "`"$baseName.ico`""))
+    Write-Verbose "Executing $exe $arguments"
+    & $exe $arguments
   }
   <#
   .SYNOPSIS
@@ -152,4 +164,54 @@ function ConvertTo-Icon {
   .NOTES
     This command requires ImageMagick. You can install it with "winget install ImageMagick.ImageMagick"
   #>
+}
+
+function Test-Verbose {
+  param (
+    [Parameter(Mandatory = $true)]
+    [System.Management.Automation.PSCmdlet]
+    $Cmdlet
+  )
+  return $Cmdlet.MyInvocation.BoundParameters['Verbose'].IsPresent
+}
+
+function Test-Regex {
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]
+    $Test,
+    [Parameter(Mandatory = $true)]
+    [string]
+    $Pattern,
+    [Parameter(Mandatory = $true)]
+    [string]
+    $FailureMessage
+  )
+  if (-not ($Test -match $Pattern)) {
+    throw $FailureMessage
+  }
+}
+
+function Request-Confirmation {
+  param (
+    [Parameter(Mandatory = $true)]
+    [string]
+    $Caption,
+    [Parameter(Mandatory = $true)]
+    [string]
+    $Message,
+    [Parameter(Mandatory = $true)]
+    [scriptblock]
+    $IfTrue,
+    [scriptblock]
+    $IfFalse
+  )
+  $Choices = '&Yes', '&No'
+  $Decision = $Host.UI.PromptForChoice($Caption, $Message, $Choices, 1)
+  if ($Decision -eq 0) {
+    $IfTrue.Invoke()
+  }
+  else {
+    $IfFalse.Invoke()
+  }
 }
