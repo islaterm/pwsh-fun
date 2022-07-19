@@ -37,3 +37,52 @@ function Remove-EmptyDirectories {
     https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/robocopy
   #>
 }
+
+$BaseExtension = @{
+  'cbz' = 'zip';
+  'cbr' = 'rar';
+  'cbt' = 'tar';
+  'cb7' = '7z'  
+}
+
+function Compress-Directories {
+  param (
+    # The directory containing the subdirectories to compress.
+    [Parameter(ValueFromPipeline = $true)]
+    [string]
+    $Path,
+    # The format to compress the directory to.
+    [Alias('f')]
+    [Parameter(Mandatory = $true)]
+    [string]
+    $Format
+  )
+  $Path = $PSBoundParameters.ContainsKey('Path') ? $Path : $(Get-Location)
+  $Extension = $BaseExtension.ContainsKey($Format) ? $BaseExtension[$Format] : $Format
+  Get-ChildItem -Path $Path -Directory | ForEach-Object {
+    sz a "$($_.FullName).$Extension" $_.FullName
+  }
+  if (-not ($Extension -eq $Format)) {
+    Get-ChildItem -Path $Path -Filter *.$Extension | `
+      Move-Item -Destination { [System.IO.Path]::ChangeExtension($_.FullName, $Format) } -Force `
+      -Verbose
+  }
+  Get-ChildItem -Path $Path -Directory | Remove-Item -Recurse -Force -Verbose
+  <#
+    .SYNOPSIS
+      Compress all subdirectories of a directory into a given format.
+    .DESCRIPTION
+      Compress all subdirectories using 7zip.
+      This function accepts all valid 7zip formats, along with some comic book formats (cbz, cbr, 
+      cb7).
+      After the compression is done, the original directories are removed.
+      If no path is given, the current directory is used.
+    .EXAMPLE
+      Compress-Directories -Path "C:\Users\User\Documents\My Documents" -Format "zip"
+    .EXAMPLE
+      'D:\Manga\Yoshihiro Togashi\Hunter X Hunter - 1998\' | Compress-Directories -Format cb7
+    .EXAMPLE
+      Compress-Directories -Format 7zip
+  #>
+}
+New-Alias -Name Compress-Directories -Value cmdir
