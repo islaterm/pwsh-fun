@@ -65,23 +65,31 @@ function Compress-Directories {
     [string]
     $Format
   )
+
   $isVerbose = $PSBoundParameters.ContainsKey('Verbose') ? $Verbose : $false
   $isDebug = $PSBoundParameters.ContainsKey('Debug') ? $Debug : $false
+
   Write-Verbose "Compressing directories in $Path to $Format"
   $Path = $PSBoundParameters.ContainsKey('Path') ? $Path : $(Get-Location)
   Write-Debug "Resolved path: $Path"
   $Extension = $BaseExtension.ContainsKey($Format) ? $BaseExtension[$Format] : $Format
   Write-Debug "Resolved extension: $Extension"
-  Get-ChildItem -Path $Path -Directory | ForEach-Object {
-    sz a "$($_.FullName).$Extension" $_.FullName 
+  try {
+    Test-7ZipInstallation
+    Get-ChildItem -Path $Path -Directory | ForEach-Object {
+      sz a "$($_.FullName).$Extension" $_.FullName 
+    }
+    if (-not ($Extension -eq $Format)) {
+      Get-ChildItem -Path $Path -Filter *.$Extension | `
+        Move-Item -Destination { [System.IO.Path]::ChangeExtension($_.FullName, $Format) } -Force `
+        -Verbose:$isVerbose -Debug:$isDebug
+    }
+    Get-ChildItem -Path $Path -Directory | Remove-Item -Recurse -Force -Verbose:$isVerbose `
+      -Debug:$isDebug
+  } catch {
+    Write-Error "Failed to compress directories in $Path to $Format"
+    throw
   }
-  if (-not ($Extension -eq $Format)) {
-    Get-ChildItem -Path $Path -Filter *.$Extension | `
-      Move-Item -Destination { [System.IO.Path]::ChangeExtension($_.FullName, $Format) } -Force `
-      -Verbose:$isVerbose -Debug:$isDebug
-  }
-  Get-ChildItem -Path $Path -Directory | Remove-Item -Recurse -Force -Verbose:$isVerbose `
-    -Debug:$isDebug
   <#
     .SYNOPSIS
       Compress all subdirectories of a directory into a given format.
@@ -99,4 +107,20 @@ function Compress-Directories {
       Compress-Directories -Format 7zip
   #>
 }
-New-Alias -Name Compress-Directories -Value cmdir
+
+function Test-7ZipInstallation {
+  $7ZipProperty = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | `
+    Where-Object { $_.PSChildName -eq '7-Zip' }
+  if ($null -eq $7ZipProperty) {
+    $Choices = '&Yes', '&No'
+    $Decision = $Host.UI.PromptForChoice('Warning', 
+      '7-zip is not installed. Would you like to install it?', $Choices, 1)
+    if ($Decision -eq 0) {
+      winget.exe install 7zip.7zip
+    }
+  }
+  else {
+    throw '7-zip is needed to compress directories.'
+  }
+  Set-Alias -Name sz -Value $7ZipProperty.InstallLocation\7z.exe
+}
