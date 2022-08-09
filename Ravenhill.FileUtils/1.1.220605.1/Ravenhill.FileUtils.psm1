@@ -123,7 +123,7 @@ function ConvertTo-Icon {
       $baseName = $_.BaseName
       Write-Verbose "Converting $_ to $baseName.ico"
       $exe = 'magick.exe'
-      $arguments = @('convert', '-background', 'none', '-resize' , '256x256', '-density'. '256x256', 
+      $arguments = @('convert', '-background', 'none', '-resize' , '256x256', '-density'. '256x256',
         $_, "$baseName.ico")
       if ($Verbose) {
         $arguments += '-verbose'

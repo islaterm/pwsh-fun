@@ -32,7 +32,7 @@
   Description       = 'Commands to enhance functionalities for files and directories for ' + `
     'PowerShell.'
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-  ScriptsToProcess = @('FileUtils.Setup.ps1')
+  ScriptsToProcess  = @('FileUtils.Setup.ps1')
 
   # Type files (.ps1xml) to be loaded when importing this module
   # TypesToProcess = @()
@@ -44,7 +44,8 @@
   # NestedModules = @()
 
   # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-  FunctionsToExport = @('Remove-EmptyDirectories', 'ConvertTo-Jpeg', 'ConvertTo-Icon')
+  FunctionsToExport = @('Remove-EmptyDirectories', 'ConvertTo-Jpeg', 'ConvertTo-Icon', 
+    'Compress-Directories')
 
   # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
   CmdletsToExport   = @()
