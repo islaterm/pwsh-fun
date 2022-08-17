@@ -1,4 +1,6 @@
 function Set-EnvironmentVariable {
+  [Alias('setenv')]
+  [CmdletBinding(SupportsShouldProcess)]
   param(
     # The name of the environment variable to set.
     [Parameter(Mandatory = $true, Position = 0)]
@@ -19,18 +21,30 @@ function Set-EnvironmentVariable {
     [Switch]
     $Machine
   )
-  if ($User) {
-    [System.Environment]::SetEnvironmentVariable($Key, $Value, 
-      [System.EnvironmentVariableTarget]::User)
+  begin {
+    $oldValue = $User -eq $true ? $(Get-EnvironmentVariable -Key $Key -User) `
+      : $(Get-EnvironmentVariable -Key $Key -Machine)
   }
-  elseif ($Machine) {
-    [System.Environment]::SetEnvironmentVariable($Key, $Value, 
-      [System.EnvironmentVariableTarget]::Machine)
+  process {
+    if ($PSCmdlet.ShouldProcess($User ? 'CurrentUser' : 'CurrentMachine', 
+        "Set environment variable $Key to $Value.$(
+          $null -ne $oldValue ? " Overriding existing value '$oldValue' with '$Value'": '')")) {
+      if ($User) {
+        [System.Environment]::SetEnvironmentVariable($Key, $Value, 
+          [System.EnvironmentVariableTarget]::User)
+      }
+      elseif ($Machine) {
+        [System.Environment]::SetEnvironmentVariable($Key, $Value, 
+          [System.EnvironmentVariableTarget]::Machine)
+      }
+      else {
+        throw "Invalid scope" # This line is unreachable on purpose.
+      }
+    }
   }
-  else {
-    throw "Invalid scope" # This line is unreachable on purpose.
+  end {
+    Update-SessionEnvironment
   }
-  Update-SessionEnvironment
   <#
   .SYNOPSIS
     Sets an environment variable.
@@ -53,7 +67,8 @@ function Set-EnvironmentVariable {
     This change is persistent across sessions.
   #>
 }
-Set-Alias -Name setenv -Value Set-EnvironmentVariable
+
+
 
 function Get-EnvironmentVariable {
   param(
@@ -96,7 +111,8 @@ function Set-HomeDirectory {
     $Choices = '&Yes', '&No'
     $Decision = $Host.UI.PromptForChoice('Warning', 
       'This will override the default values of $HOME and `~`', $Choices, 1)
-  } else {
+  }
+  else {
     $Decision = 0
   }
   if ($Decision -eq 0) {
@@ -149,3 +165,5 @@ function Get-HomeDirectory {
     Set-HomeDirectory
   #>
 }
+
+# TODO Add to path
