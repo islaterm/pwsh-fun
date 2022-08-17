@@ -167,23 +167,3 @@ function Get-HomeDirectory {
 }
 
 # TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
-
-# TODO Add to path
