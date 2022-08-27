@@ -32,7 +32,7 @@
   Description       = 'Commands to enhance functionalities for files and directories for ' + `
     'PowerShell.'
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-  # ScriptsToProcess = @('FileUtils.Setup.ps1')
+  ScriptsToProcess = @('Ravenhill.FileUtils_aux', 'ConvertTo-Icon.ps1')
 
   # Type files (.ps1xml) to be loaded when importing this module
   # TypesToProcess = @()
