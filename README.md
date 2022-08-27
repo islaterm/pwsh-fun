@@ -30,7 +30,8 @@ $PS_PROFILE_DIRECTORY = $(Get-Item $PROFILE).Directory.FullName
 if (-not $(Test-Path $PS_PROFILE_DIRECTORY\Modules)) {
   New-Item -ItemType Directory -Force -Path $PS_PROFILE_DIRECTORY\Modules
 }
-Move-Item -Path .\pwsh-fun\* -Destination "$PS_PROFILE_DIRECTORY\Modules\"
+Get-ChildItem -Path .\pwsh-fun\* -Recurse -Force `
+  | Move-Item -Destination "$PS_PROFILE_DIRECTORY\Modules\"
 Remove-Item -Path .\pwsh-fun -Force -Recurse
 ```
 
