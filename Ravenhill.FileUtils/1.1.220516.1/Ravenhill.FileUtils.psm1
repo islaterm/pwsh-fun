@@ -48,48 +48,12 @@ $BaseExtension = @{
 function Compress-Directories {
   [Alias('cmdir')]
   param (
-    # The directory containing the subdirectories to compress.
-    [Parameter(Mandatory,
-      Position = 0,
-      ValueFromPipeline,
-      ValueFromPipelineByPropertyName = $true,
-      HelpMessage = "Path to one or more locations.")]
-    [ValidateNotNullOrEmpty()]
-    [SupportsWildcards()]
+    [Parameter(Mandatory)]
     [string[]]
-    $Path,
-    # The format to compress the directory to.
-    [Alias('f')]
-    [Parameter(Mandatory = $true)]
-    [ValidateSet('zip', 'rar', 'tar', '7z', 'bz2', 'gz', 'xz', 'cbz', 'cbr', 'cbt', 'cb7')]
-    [string]
-    $Format
+    $Path
   )
-
-  $isVerbose = $PSBoundParameters.ContainsKey('Verbose') ? $Verbose : $false
-  $isDebug = $PSBoundParameters.ContainsKey('Debug') ? $Debug : $false
-
-  Write-Verbose "Compressing directories in $Path to $Format"
-  $Path = $PSBoundParameters.ContainsKey('Path') ? $Path : $(Get-Location)
-  Write-Debug "Resolved path: $Path"
-  $Extension = $BaseExtension.ContainsKey($Format) ? $BaseExtension[$Format] : $Format
-  Write-Debug "Resolved extension: $Extension"
-  try {
-    Test-7ZipInstallation
-    Get-ChildItem -Path $Path -Directory | ForEach-Object {
-      sz a "$($_.FullName).$Extension" $_.FullName 
-    }
-    if (-not ($Extension -eq $Format)) {
-      Get-ChildItem -Path $Path -Filter *.$Extension | `
-        Move-Item -Destination { [System.IO.Path]::ChangeExtension($_.FullName, $Format) } -Force `
-        -Verbose:$isVerbose -Debug:$isDebug
-    }
-    Get-ChildItem -Path $Path -Directory | Remove-Item -Recurse -Force -Verbose:$isVerbose `
-      -Debug:$isDebug
-  } catch {
-    Write-Error "Failed to compress directories in $Path to $Format"
-    throw
-  }
+  Resolve-Path -Path $Path
+  Write-Debug "Path resolved to: $Path"
   <#
     .SYNOPSIS
       Compress all subdirectories of a directory into a given format.

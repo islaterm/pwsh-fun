@@ -1,3 +1,5 @@
+Import-Module ..\Ravenhill.FileUtils.psm1 -Force
+
 $Script:TmpDir = 'tmp'
 $Script:OriginalLocation = Get-Location
 
@@ -10,7 +12,7 @@ BeforeAll {
 
 Describe 'Compress-Directories' {
   It 'Test_1 should be compressed to Test_1.zip' {
-    Compress-Directories -Path "$TmpDir" -Format zip
+    Compress-Directories -Path "$TmpDir" -Debug #-Format zip
     Test-Path -Path "$TmpDir\Test_1.zip" | Should -Be $true
   }
 }
