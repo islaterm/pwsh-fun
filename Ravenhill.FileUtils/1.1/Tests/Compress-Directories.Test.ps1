@@ -1,4 +1,4 @@
-Import-Module ..\Ravenhill.FileUtils.psm1 -Force
+Import-Module ..\Compress-Directories.ps1 -Force
 
 $Script:TmpDir = 'tmp'
 $Script:OriginalLocation = Get-Location

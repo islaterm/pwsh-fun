@@ -38,40 +38,6 @@ function Remove-EmptyDirectories {
   #>
 }
 
-$BaseExtension = @{
-  'cbz' = 'zip';
-  'cbr' = 'rar';
-  'cbt' = 'tar';
-  'cb7' = '7z'  
-}
-
-function Compress-Directories {
-  [Alias('cmdir')]
-  param (
-    [Parameter(Mandatory)]
-    [string[]]
-    $Path
-  )
-  Resolve-Path -Path $Path
-  Write-Debug "Path resolved to: $Path"
-  <#
-    .SYNOPSIS
-      Compress all subdirectories of a directory into a given format.
-    .DESCRIPTION
-      Compress all subdirectories using 7zip.
-      This function accepts all valid 7zip formats, along with some comic book formats (cbz, cbr, 
-      cb7).
-      After the compression is done, the original directories are removed.
-      If no path is given, the current directory is used.
-    .EXAMPLE
-      Compress-Directories -Path "C:\Users\User\Documents\My Documents" -Format "zip"
-    .EXAMPLE
-      'D:\Manga\Yoshihiro Togashi\Hunter X Hunter - 1998\' | Compress-Directories -Format cb7
-    .EXAMPLE
-      Compress-Directories -Format 7zip
-  #>
-}
-
 function Test-7ZipInstallation {
   $7ZipProperty = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | `
     Where-Object { $_.PSChildName -eq '7-Zip' }
