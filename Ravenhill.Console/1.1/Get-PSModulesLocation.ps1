@@ -1,20 +1,7 @@
-function Get-PSModulesPath {
-  [CmdletBinding()]
-  param (
-    
-  )
-  
-  begin {
-    
-  }
-  
-  process {
-    
-  }
-  
-  end {
-    
-  }
+function Get-PSModulesLocation {
+  [Alias('gpsm', 'Get-PSModulesPath')]
+  param ()
+  "$((Get-Item $PROFILE).Directory.FullName)\Modules"
   <#
   .SYNOPSIS
     Gets the path to the PowerShell modules directory.
