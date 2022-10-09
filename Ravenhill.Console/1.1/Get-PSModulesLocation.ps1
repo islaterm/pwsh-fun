@@ -12,5 +12,9 @@ function Get-PSModulesLocation {
   .EXAMPLE
     PS> Get-PSModulesPath
     C:\Users\R8V\Documents\WindowsPowerShell\Modules
+  .EXAMPLE
+    PS> cd $(Get-PSModulesPath)
+    PS> $pwd
+    C:\Users\R8V\Documents\PowerShell\Modules
   #>
 }

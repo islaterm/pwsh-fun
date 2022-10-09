@@ -1,6 +1,31 @@
 # Ravenhill.Console
 
-This module contains utility functions to manage powershell consoles.
+This module contains utility functions to manage *PowerShell* consoles.
+
+## Get-PSModulesLocation
+
+Gets the path to the *PowerShell* modules directory.
+
+
+### SYNTAX
+
+```powershell
+Get-PSModulesLocation [<CommonParameters>]
+```
+
+### OUTPUTS
+``System.String``. The path to the *PowerShell* modules directory.
+
+### EXAMPLES
+```powershell
+Get-PSModulesLocation
+# C:\Users\R8V\Documents\WindowsPowerShell\Modules
+```
+```powershell
+Set-Location $(Get-PSModulesLocation)
+Get-Location
+# C:\Users\R8V\Documents\PowerShell\Modules
+```
 
 ## Set-RemoteSSH
 
