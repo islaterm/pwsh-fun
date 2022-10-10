@@ -5,17 +5,10 @@ function ConvertTo-Nanosecond {
     [TimeSpan]
     $TimeSpan
   )
-  
   begin {
-    
   }
-  
   process {
-    
-  }
-  
-  end {
-    
+    $TimeSpan.TotalSeconds * 10 * [Math]::Pow(10, 8)
   }
   <#
   .SYNOPSIS
