@@ -3,12 +3,16 @@ function ConvertTo-Nanosecond {
   param (
     [Parameter(Mandatory)]
     [TimeSpan]
-    $TimeSpan
+    $TimeSpan,
+    [switch]
+    $AsString
   )
-  begin {
+  $nanoseconds = $TimeSpan.TotalSeconds * 10 * [Math]::Pow(10, 8)
+  if ($AsString) {
+    "00:00:00.{0}" -f $nanoseconds
   }
-  process {
-    $TimeSpan.TotalSeconds * 10 * [Math]::Pow(10, 8)
+  else {
+    $nanoseconds
   }
   <#
   .SYNOPSIS
