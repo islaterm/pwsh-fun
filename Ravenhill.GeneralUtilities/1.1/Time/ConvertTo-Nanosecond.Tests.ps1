@@ -10,4 +10,7 @@ Describe 'ConvertTo-Nanosecond' {
     ConvertTo-Nanosecond -TimeSpan (New-TimeSpan -Minutes 5) -AsString `
     | Should -Be '00:00:00.300000000000'
   }
+  It 'Converts a microsecond to nanoseconds.' {
+    ConvertTo-Nanosecond -Microseconds 1 | Should -Be 1000
+  }
 }

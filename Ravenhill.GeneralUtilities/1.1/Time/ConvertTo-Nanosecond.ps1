@@ -1,37 +1,48 @@
 function ConvertTo-Nanosecond {
   [CmdletBinding()]
   param (
-    [Parameter(Mandatory)]
+    # The time span to convert to nanoseconds.
+    [Parameter(Mandatory, ParameterSetName = 'TimeSpan')]
     [TimeSpan]
     $TimeSpan,
+    # The microseconds to convert to nanoseconds.
+    [Parameter(Mandatory, ParameterSetName = 'Microsecond')]
+    [Int]
+    $Microsecond,
+    # If specified, the result will be returned as a timestamp string.
+    [switch]
+    $AsTimestamp,
+    # If specified, the result will be returned as a string.
     [switch]
     $AsString
   )
-  $nanoseconds = $TimeSpan.TotalSeconds * 10 * [Math]::Pow(10, 8)
-  if ($AsString) {
-    "00:00:00.{0}" -f $nanoseconds
-  }
-  else {
-    $nanoseconds
+  process {
+    $nanoseconds = 0
+    switch ($PSCmdlet.ParameterSetName) {
+      'TimeSpan' {
+        $nanoseconds = $TimeSpan.TotalSeconds * 1e9
+        if ($AsTimestamp) {
+          $nanoseconds = "00:00:00.$nanoseconds"
+        }
+      }
+      'Microsecond' {
+        $microsecond
+        $nanoseconds = $DateTime.Ticks * 1e6
+      }
+    }
+    return $nanoseconds
   }
   <#
   .SYNOPSIS
     Converts a time span to nanoseconds.
   .DESCRIPTION
     Converts a time span to nanoseconds.
-  .PARAMETER TimeSpan
-    The time span to convert.
   .EXAMPLE
     PS> ConvertTo-Nanosecond -TimeSpan (New-TimeSpan -Minutes 5)
     300000000000
   .EXAMPLE
     PS> ConvertTo-Nanosecond -TimeSpan (New-TimeSpan -Minutes 5) -AsTimeSpan
-    00:00:00.3000000
-  .EXAMPLE
-    PS> ConvertTo-Nanosecond -TimeSpan (New-TimeSpan -Minutes 5) -AsTimeSpan -AsDouble
-    0.3
-  .EXAMPLE
-    PS> ConvertTo-Nanosecond -TimeSpan (New-TimeSpan -Minutes 5) -AsTimeSpan -AsDouble -AsInt
+    00:00:00.300000000000
     0
   #>
 }
