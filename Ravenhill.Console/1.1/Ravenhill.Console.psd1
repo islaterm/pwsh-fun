@@ -49,7 +49,7 @@
     # RequiredAssemblies = @()
 
     # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    ScriptsToProcess = @('Get-PSModulesLocation.ps1')
+    ScriptsToProcess = @('Get-PSModulesLocation.ps1', 'Test-Command.ps1')
 
     # Type files (.ps1xml) to be loaded when importing this module
     # TypesToProcess = @()
