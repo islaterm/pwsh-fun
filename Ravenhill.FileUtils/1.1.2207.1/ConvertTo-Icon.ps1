@@ -1,55 +1,36 @@
+Import-Module Ravenhill.Console
+
+function Test-Magick {
+  [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
+  param ()
+  if (-not (Test-Command magick)) {
+    Write-Warning 'ImageMagick is not installed. The function will now try to install it.'
+    if ($PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", "Install ImageMagick")) {
+      if (-not (Test-Command winget)) {
+        Write-Error "Winget is not installed. Please install it and try again."
+        return
+      }
+      winget.exe install ImageMagick.ImageMagick
+      Update-SessionEnvironment    
+    }
+    else {
+      Write-Error "ImageMagick is not installed. Please install it and try again."
+      return
+    }
+  }
+}
+
 function ConvertTo-Icon {
   [Alias('cti')]
-  param (
-    # Specifies the objects that are converted to ICO files. 
-    # You can also pipe objects to `ConvertTo-ICO`.
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-    $InputObject,
-    # The path to the output icon file(s)
-    [string]
-    $Output,
-    # The size of the icon in pixels, defaults to 256x256
-    [Alias('IconSize', 's')]
-    [string]
-    $Size = '256x256',
-    # If present, the original image will be removed after conversion
-    [Alias('RemoveOriginal', 'c')]
-    [switch]
-    $Cleanup
-  )
+  [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
+  param ()
   begin {
-    Test-Regex -Test $Size -Pattern '^\d+x\d+$' `
-      -FailureMessage "The icon size must be in the format '<width>x<height>'"
+    $originalErrorActionPreference = Set-ErrorActionPreference 'Stop'
+    Test-Magick
   }
-  process {
-    $OutputExist = $Output.Length -ne 0
-    if ($OutputExist -and $Output.Length -ne $InputObject.Length) {
-      throw "The number of files to convert must match the number of output files."
-    }
-    if (-not (Test-Command -Command magick)) {
-      Request-Confirmation -Caption 'Warning' `
-        -Message 'This command requires ImageMagick. Would you like to install it?' -IfTrue { 
-        winget.exe install ImageMagick.ImageMagick
-        Update-SessionEnvironment 
-      }
-    }
-    for ($i = 0; $i -lt $InputObject.Count; $i++) {
-      $InputObject = Get-Item $InputObject[$i]
-      $OutputName = $OutputExist ? $Output[$i] : "${File.BaseName}.ico"
-      Write-Verbose "Converting $InputObject to $OutputName.ico"
-      $exe = 'magick.exe'
-      [System.Collections.ArrayList]$arguments = @('convert')
-      if (Test-Verbose($PSCmdlet)) {
-        $arguments.Add('-verbose')
-      }
-      $arguments.AddRange( @('-background', 'none', '-resize' , $Size, '-density', $Size, 
-          "`"$InputObject`"", "`"$OutputName`""))
-      Write-Verbose "Executing $exe $arguments"
-      & $exe $arguments
-      if ($Cleanup -and (Test-Path -Path $OutputName)) {
-        Remove-Item -Path $InputObject -Force -Verbose:$Verbose
-      }
-    }
+  process {}
+  end {
+    $ErrorActionPreference = $originalErrorActionPreference
   }
   <#
   .SYNOPSIS
