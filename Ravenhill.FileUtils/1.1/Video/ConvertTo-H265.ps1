@@ -3,19 +3,28 @@ Import-Module Ravenhill.Exceptions
 
 function ConvertTo-H265 {
   [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
-  param ()
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $InputFile,
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $OutputFile
+  )
   begin {
     Write-Debug 'ConvertTo-H265: begin'
     $ffmpeg = 'ffmpeg'
     try {
       Test-Command -Command $ffmpeg -IfFalse {
         Write-Warning "$ffmpeg is not installed. The function will now try to install it."
-        if ($PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", "Install ffmpeg")) {
+        if ($PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", "Install $ffmpeg")) {
           Install-Ffmpeg
         }
         else {
           throw [NotInstalledException]::new(
-            'ffmpeg is not installed. Please install it and try again.')
+            "$ffmpeg is not installed. Please install it and try again.")
         }
       }
     }
@@ -25,7 +34,14 @@ function ConvertTo-H265 {
     }
   }
   process {
-    
+    Write-Debug 'ConvertTo-H265: process'
+    Write-Debug "Input file: $InputFile"
+    Write-Debug "Output file: $OutputFile"
+    # 1 - Check if the input file exists
+    # 2 - Check if the output file exists
+    # 3 - Input format (regex)
+    # 4 - ffmpeg command
+    # 5 - Cleanup
   }
   end {
     Write-Debug 'ConvertTo-H265: end'
