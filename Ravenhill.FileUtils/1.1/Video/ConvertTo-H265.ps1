@@ -6,27 +6,19 @@ function ConvertTo-H265 {
   param (
     [Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
+    [Alias('Path', 'i')]
     [string]
     $InputFile,
     [Parameter()]
     [ValidateNotNullOrEmpty()]
+    [Alias('o', 'Destination')]
     [string]
     $OutputFile
   )
   begin {
     Write-Debug 'ConvertTo-H265: begin'
-    $ffmpeg = 'ffmpeg'
     try {
-      Test-Command -Command $ffmpeg -IfFalse {
-        Write-Warning "$ffmpeg is not installed. The function will now try to install it."
-        if ($PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", "Install $ffmpeg")) {
-          Install-Ffmpeg
-        }
-        else {
-          throw [NotInstalledException]::new(
-            "$ffmpeg is not installed. Please install it and try again.")
-        }
-      }
+      Test-Ffmpeg
     }
     catch [NotInstalledException] {
       Write-Error $_.Message
@@ -37,7 +29,12 @@ function ConvertTo-H265 {
     Write-Debug 'ConvertTo-H265: process'
     Write-Debug "Input file: $InputFile"
     Write-Debug "Output file: $OutputFile"
-    # 1 - Check if the input file exists
+    if (-not (Test-Path -Path $InputFile)) {
+      $PSCmdlet.ThrowTerminatingError("The input file '$InputFile' does not exist.")
+    }
+    Test-VideoExtension -Path $InputFile -IfFalse {
+      $PSCmdlet.ThrowTerminatingError("The input file '$resolvedFile' is not a video file.")
+    }
     # 2 - Check if the output file exists
     # 3 - Input format (regex)
     # 4 - ffmpeg command
@@ -51,6 +48,46 @@ function ConvertTo-H265 {
     .SYNOPSIS
       Convert video files to H.265 format.
   #>
+}
+
+
+function Script:Test-VideoExtension {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $Path,
+    [scriptblock]
+    $IfTrue,
+    [scriptblock]
+    $IfFalse
+  )
+  $resolvedFile = Get-Item -Path $InputFile
+  Write-Debug "Resolved path: $resolvedFile"
+  if ($resolvedFile.Extension -in $videoExtensions) {
+    Write-Debug "The file '$resolvedFile' is a video file."
+  }
+  else {
+    Write-Debug "The file '$resolvedFile' is not a video file."
+  }
+  return $resolvedFile
+}
+
+function Script:Test-Ffmpeg {
+  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
+  param ()
+  $ffmpeg = 'ffmpeg'
+  Test-Command -Command $ffmpeg -IfFalse {
+    Write-Warning "$ffmpeg is not installed. The function will now try to install it."
+    if ($PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", "Install $ffmpeg")) {
+      Install-Ffmpeg
+    }
+    else {
+      throw [NotInstalledException]::new(
+        "$ffmpeg is not installed. Please install it and try again.")
+    }
+  }
 }
 
 function Script:Install-Ffmpeg {
@@ -68,3 +105,5 @@ function Script:Install-Ffmpeg {
       exception.
   #>
 }
+
+$videoExtensions = @('mp4', 'mkv', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mpg', 'mpeg', 'vob', 'ogv', 'ogg', '3gp', '3g2', '3gpp', '3gpp2', 'asf', 'asx', 'f4v', 'f4p', 'f4a', 'f4b')
