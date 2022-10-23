@@ -30,9 +30,11 @@ function ConvertTo-H265 {
     Write-Debug "Input file: $InputFile"
     Write-Debug "Output file: $OutputFile"
     if (-not (Test-Path -Path $InputFile)) {
+      Write-Debug "Input file does not exist: $InputFile"
       $PSCmdlet.ThrowTerminatingError("The input file '$InputFile' does not exist.")
     }
     Test-VideoExtension -Path $InputFile -IfFalse {
+      Write-Debug "Input file is not a video file: $InputFile"
       $PSCmdlet.ThrowTerminatingError("The input file '$resolvedFile' is not a video file.")
     }
     # 2 - Check if the output file exists
@@ -106,4 +108,6 @@ function Script:Install-Ffmpeg {
   #>
 }
 
-$videoExtensions = @('mp4', 'mkv', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mpg', 'mpeg', 'vob', 'ogv', 'ogg', '3gp', '3g2', '3gpp', '3gpp2', 'asf', 'asx', 'f4v', 'f4p', 'f4a', 'f4b')
+$videoExtensions = @(
+  'mp4', 'mkv', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mpg', 'mpeg', 'vob', 'ogv', 'ogg', '3gp', 
+  '3g2', '3gpp', '3gpp2', 'asf', 'asx', 'f4v', 'f4p', 'f4a', 'f4b')
