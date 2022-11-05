@@ -23,13 +23,23 @@ function Test-Magick {
 function ConvertTo-Icon {
   [Alias('cti')]
   [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
-  param ()
+  param (
+    [Parameter(Mandatory, ValueFromPipeline)]
+    [string]
+    $Path
+  )
   begin {
+    Write-Debug 'ConvertTo-Icon: begin'
     $originalErrorActionPreference = Set-ErrorActionPreference 'Stop'
     Test-Magick
   }
-  process {}
+  process {
+    write-debug 'ConvertTo-Icon: process'
+    $resolvedPath = Resolve-Path $Path
+    Write-Debug "Resolved path: $resolvedPath"
+  }
   end {
+    Write-Debug 'ConvertTo-Icon: end'
     $ErrorActionPreference = $originalErrorActionPreference
   }
   <#
