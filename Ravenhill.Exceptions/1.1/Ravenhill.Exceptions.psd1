@@ -49,7 +49,7 @@
   # RequiredAssemblies = @()
 
   # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-  ScriptsToProcess = @('NotInstalledException.ps1')
+  ScriptsToProcess = @('IllegalArgumentException.ps1', 'NotInstalledException.ps1')
 
   # Type files (.ps1xml) to be loaded when importing this module
   # TypesToProcess = @()
