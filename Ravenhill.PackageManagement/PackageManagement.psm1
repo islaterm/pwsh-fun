@@ -31,3 +31,12 @@
 #       The path to a folder containing a ``gradle.build`` or ``gradle.build.kts`` file.
 #   #>
 # }
+function Search-ChocolateyPackage {
+  [Alias('chs', 'schp')]
+  param (
+    [Mandatory]
+    [string]
+    $Name
+  )
+  choco.exe search $Name  
+}

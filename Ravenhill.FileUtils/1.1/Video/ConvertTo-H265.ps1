@@ -29,22 +29,19 @@ function ConvertTo-H265 {
     Write-Debug 'ConvertTo-H265: process'
     Write-Debug "Input file: $InputFile"
 
-    if (-not (Test-Path -Path $InputFile)) {
-      throw [System.IO.FileNotFoundException] "Input file does not exist: $InputFile"
-    }
-    
     Test-VideoExtension -Path $InputFile -IfFalse {
       throw [IllegalArgumentException] "Input file is not a video file: $InputFile"
     }
 
+    $resolvedFile = Get-Item $InputFile
+    if (-not $OutputFile) {
+      $OutputFile = $InputFile.Replace($resolvedFile.Extension, '.h265.mp4')
+    }
     Write-Debug "Output file: $OutputFile"
-
-    Write-Verbose "Converting $InputFile to H265"
-    ffmpeg.exe -i "$InputFile" -vcodec libx265 -crf 28 "$OutputFile"
-    
     # 2 - Check if the output file exists
     # 3 - Input format (regex)
     # 4 - ffmpeg command
+    ffmpeg.exe -i "$InputFile" -vcodec libx265 -crf 28 "$OutputFile"
     # 5 - Cleanup
   }
   end {
@@ -70,14 +67,14 @@ function Script:Test-VideoExtension {
     [scriptblock]
     $IfFalse
   )
-  $resolvedFile = Get-Item -Path $InputFile
+  $resolvedFile = Get-Item -Path (Resolve-Path $InputFile)
   Write-Debug "Resolved path: $resolvedFile"
   if ($resolvedFile.Extension -in $videoExtensions) {
-    Write-Debug "The file '$resolvedFile' is a video file."
+    Write-Debug "The file '$resolvedFile is a video file."
     & $IfTrue
   }
   else {
-    Write-Debug "The file '$resolvedFile' is not a video file."
+    Write-Debug "Format '.${$resolvedFile.Extension}' is not a video file."
     & $IfFalse
   }
   return $resolvedFile

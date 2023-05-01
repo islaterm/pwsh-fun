@@ -5,6 +5,47 @@ function Test-Verbose {
     $Cmdlet
   )
   return $Cmdlet.MyInvocation.BoundParameters['Verbose'].IsPresent
+  <#
+  .SYNOPSIS
+    Checks if the Verbose parameter is enabled in the current context.
+  .DESCRIPTION
+    The Test-Verbose function is used to check if the Verbose parameter is enabled in the current 
+    context.
+  .PARAMETER Cmdlet
+    The current cmdlet instance.
+  .EXAMPLE
+    PS C:\> if (Test-Verbose -Cmdlet $MyInvocation.MyCommand) {
+      Write-Verbose "Verbose output enabled."
+    }
+
+    This example shows how to use Test-Verbose to check if the Verbose parameter is enabled, and 
+    write a message to the verbose output stream if it is.
+  #>
+}
+
+function Test-Debug {
+  param (
+    [Parameter(Mandatory = $true)]
+    [System.Management.Automation.PSCmdlet]
+    $Cmdlet
+  )
+  return $Cmdlet.MyInvocation.BoundParameters['Debug'].IsPresent
+  <#
+  .SYNOPSIS
+    Checks if the Debug parameter is enabled in the current context.
+  .DESCRIPTION
+    The Test-Debug function is used to check if the Debug parameter is enabled in the current 
+    context.
+  .PARAMETER Cmdlet
+    The current cmdlet instance.
+  .EXAMPLE
+    PS C:\> if (Test-Debug -Cmdlet $MyInvocation.MyCommand) {
+      Write-Debug "Debug output enabled."
+    }
+
+    This example shows how to use Test-Debug to check if the Debug parameter is enabled, and write 
+    a message to the debug output stream if it is.
+  #>
 }
 
 function Test-Regex {

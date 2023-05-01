@@ -1,4 +1,6 @@
 . $PSScriptRoot\Ravenhill.FileUtils_aux.ps1
+. $PSScriptRoot\Video\ConvertTo-H265.ps1
+. $PSScriptRoot\Remove-FilesByExtension.ps1
 
 function Remove-EmptyDirectories {
   param (
