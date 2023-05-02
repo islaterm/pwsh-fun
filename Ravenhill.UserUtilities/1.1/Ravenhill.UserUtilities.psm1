@@ -1,22 +1,24 @@
+. $PSScriptRoot\Get-EnvironmentVariable.ps1
+
 function Set-EnvironmentVariable {
   [Alias('setenv')]
   [CmdletBinding(SupportsShouldProcess)]
   param(
     # The name of the environment variable to set.
-    [Parameter(Mandatory = $true, Position = 0)]
+    [Parameter(Mandatory, Position = 0)]
     [string]
     $Key,
     # The value of the environment variable to set.
-    [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+    [Parameter(Mandatory, ValueFromPipeline)]
     [string]
     $Value,
     # Designates the current user as the owner of the environment variable.
-    [Parameter(Mandatory = $true, ParameterSetName = "UserSet")]
+    [Parameter(Mandatory, ParameterSetName = "UserSet")]
     [Alias('u')]
     [Switch]
     $User,
     # Designates the current machine as the owner of the environment variable.
-    [Parameter(Mandatory = $true, ParameterSetName = "MachineSet")]
+    [Parameter(Mandatory, ParameterSetName = "MachineSet")]
     [Alias('m')]
     [Switch]
     $Machine
@@ -69,38 +71,10 @@ function Set-EnvironmentVariable {
 }
 
 
-
-function Get-EnvironmentVariable {
-  param(
-    [Parameter(Mandatory = $true, Position = 0)]
-    [string]
-    $Key,
-    [Parameter(Mandatory = $true, ParameterSetName = "UserSet")]
-    [Alias('u')]
-    [Switch]
-    $User,
-    [Parameter(Mandatory = $true, ParameterSetName = "MachineSet")]
-    [Alias('m')]
-    [Switch]
-    $Machine
-  )
-  if ($User) {
-    [System.Environment]::GetEnvironmentVariable($Key, [System.EnvironmentVariableTarget]::User)
-  }
-  elseif ($Machine) {
-    [System.Environment]::GetEnvironmentVariable($Key, [System.EnvironmentVariableTarget]::Machine)
-  }
-  else {
-    throw "Invalid scope" # This line is unreachable on purpose.
-  }
-}
-Set-Alias -Name getenv -Value Get-EnvironmentVariable
-
-
 function Set-HomeDirectory {
   param (
     # The path to the home directory to set.
-    [Parameter(Mandatory = $true, Position = 0)]
+    [Parameter(Mandatory, Position = 0)]
     [string]
     $Path,
     # Bypass confirmation prompt. 
