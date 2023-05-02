@@ -41,7 +41,10 @@ function Remove-FilesByExtension {
   .SYNOPSIS
     Removes files with a given extension from a specified directory.
   .DESCRIPTION
-    The Remove-FilesByExtension function is used to remove all files with a specified extension from a given directory, including all subdirectories. It supports the ShouldProcess functionality, which allows the user to preview the operation and confirm or cancel it. Debug and verbose messages can also be enabled.
+    The Remove-FilesByExtension function is used to remove all files with a specified extension from 
+    a given directory, including all subdirectories. It supports the ShouldProcess functionality, 
+    which allows the user to preview the operation and confirm or cancel it. 
+    Debug and verbose messages can also be enabled.
   .EXAMPLE
     PS C:\> Remove-FilesByExtension -Path "C:\Users\John\Documents" -Extension "docx"
     This example removes all files with the extension ".docx" from the directory 
@@ -51,3 +54,4 @@ function Remove-FilesByExtension {
     https://github.com/r8vnhill/pwsh-fun/blob/master/Ravenhill.FileUtils/1.1/Remove-FilesByExtension.ps1
   #>
 }
+
