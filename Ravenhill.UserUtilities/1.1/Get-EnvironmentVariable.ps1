@@ -1,6 +1,6 @@
 function Get-EnvironmentVariable {
   [CmdletBinding()]
-  [Alias('Get-EnvVar', "gev")]
+  [Alias('Get-EnvVar', "gev", 'getenv')]
   param(
     # Specifies the name of the environment variable to retrieve.
     [Parameter(Mandatory, Position = 0)]
