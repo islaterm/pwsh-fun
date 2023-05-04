@@ -9,7 +9,7 @@ function Remove-FilesByExtension {
     # Specifies the extension(s) of the files to be removed.
     [Parameter(Mandatory, Position = 1, ValueFromPipelineByPropertyName)]
     [string[]]
-    $Extension
+    $Extensions
   )
 
   begin {
@@ -21,9 +21,9 @@ function Remove-FilesByExtension {
       throw "The specified path '$Path' does not exist"
     }
     $resolvedPath = Resolve-Path $Path -Debug:$isDebug -Verbose:$isVerbose
-    Write-Verbose "Removing files with extensions '$($Extension -join ",")' from '$resolvedPath'"
+    Write-Verbose "Removing files with extensions '$($Extensions -join ",")' from '$resolvedPath'"
     $shouldProcess = $PSCmdlet.ShouldProcess($env:COMPUTERNAME, 
-      "Remove files with extensions '$($Extension -join ",")' from '$resolvedPath'")
+      "Remove files with extensions '$($Extensions -join ",")' from '$resolvedPath'")
     Write-Debug "ShouldProcess result: $shouldProcess"
     $ConfirmPreference = 'None'
   }
@@ -31,11 +31,11 @@ function Remove-FilesByExtension {
   process {
     if ($shouldProcess) {
       $filesToRemove = Get-ChildItem -Path $resolvedPath -Recurse | Where-Object {
-        $_.Extension.TrimStart('.') -in $Extension
+        $_.Extensions.TrimStart('.') -in $Extensions
       } -Verbose:$isVerbose -Debug:$isDebug
       Write-Debug "Files to be removed:`n$($filesToRemove.FullName -join "`n")"
       $filesToRemove | Remove-Item -Force -Verbose:$isVerbose -Debug:$isDebug
-      Write-Verbose "Removed $($filesToRemove.Count) files with extensions '$($Extension -join ",")'"
+      Write-Verbose "Removed $($filesToRemove.Count) files with extensions '$($Extensions -join ",")'"
     }
     else {
       Write-Verbose "Remove-FilesByExtension was not executed due to user cancellation"
