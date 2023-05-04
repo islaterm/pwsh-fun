@@ -12,7 +12,7 @@
   RootModule        = 'Ravenhill.UserUtilities.psm1';
 
   # Version number of this module.
-  ModuleVersion     = '1.0.220518.1'
+  ModuleVersion     = '1.1'
 
   # ID used to uniquely identify this module
   GUID              = '7b525f07-ee5e-4301-a82b-ad1300dfa94f'
@@ -34,7 +34,8 @@
   ScriptsToProcess  = @('UserUtilities.Setup.ps1')
 
   # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-  FunctionsToExport = @('Set-EnvironmentVariable', 'Set-HomeDirectory', 'Get-HomeDirectory')
+  FunctionsToExport = @('Set-EnvironmentVariable', 'Set-HomeDirectory', 'Get-HomeDirectory', 
+    'Get-EnvironmentVariable')
 
   # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
   CmdletsToExport   = @()

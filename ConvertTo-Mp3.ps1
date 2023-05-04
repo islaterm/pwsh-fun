@@ -13,7 +13,7 @@ function ConvertTo-MP3
   try
   {
     Set-Location $Path
-    foreach ($element in $(Get-ChildItem -Exclude *.mp3, *.txt, *.jpg, *.part))
+    foreach ($element in $(Get-ChildItem -LiteralPath . -Exclude *.mp3, *.txt, *.jpg, *.part))
     {
       if ($element -is [System.IO.DirectoryInfo])
       {
