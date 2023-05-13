@@ -11,11 +11,9 @@ function ConvertTo-MP3 {
         [string]
         $Format
     )
-
     begin {
         Write-Verbose "Converting all '$Format' files in '$Path' to mp3 using ffmpeg"
     }
-
     process {
         $resolvedPath = Resolve-Path $Path
         $filesToConvert = Get-ChildItem -Path $resolvedPath -Recurse -File -Filter "*.$Format"
@@ -28,11 +26,9 @@ function ConvertTo-MP3 {
             Invoke-Expression $command
         }
     }
-
     end {
         Write-Verbose "Finished converting all '$Format' files in '$Path' to mp3"
     }
-
     <#
     .SYNOPSIS
         Converts all files of the given format of a directory to mp3 using ffmpeg.
