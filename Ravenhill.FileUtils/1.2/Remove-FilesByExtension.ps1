@@ -27,7 +27,6 @@ function Remove-FilesByExtension {
     Write-Debug "ShouldProcess result: $shouldProcess"
     $ConfirmPreference = 'None'
   }
-
   process {
     if ($shouldProcess) {
       $filesToRemove = Get-ChildItem -Path $resolvedPath -Recurse | Where-Object {

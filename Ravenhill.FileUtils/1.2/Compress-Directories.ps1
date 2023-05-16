@@ -5,7 +5,7 @@ $BaseExtension = @{
   'cb7' = '7z'  
 }
 
-# ! Add  
+# TODO: Add should process support
 function Compress-Directories {
   [Alias('cmdir')]
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
@@ -41,6 +41,7 @@ function Compress-Directories {
         -Debug:$(Test-Debug -Parameters $PSBoundParameters)
     }
     else {
+      Test-Command -Command '7z' 
       $sz = Get-7ZipExecutablePath
       Write-Verbose "Using 7zip for $Extension"
       # ? Maybe it would be better to add 7zip to the path if it's not already there?
@@ -76,7 +77,7 @@ function Compress-Directories {
   #>
 }
 
-function private:Get-7ZipExecutablePath {
+function Get-7ZipExecutablePath {
   $7zip = Get-Item -Path (Get-ItemProperty `
       -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" `
     | Where-Object { $_.DisplayName -like "7-Zip*" }).UninstallString.Replace('"', '')
