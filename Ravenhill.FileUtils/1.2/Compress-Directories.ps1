@@ -5,7 +5,6 @@ $BaseExtension = @{
   'cb7' = '7z'  
 }
 
-# TODO: Add should process support
 function Compress-Directories {
   [Alias('cmdir')]
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
@@ -56,8 +55,13 @@ function Compress-Directories {
       }
     }
     if ($Cleanup) {
-      Get-ChildItem -Path $Path -Directory | Remove-Item -Recurse -Force -Verbose:$isVerbose `
-        -Debug:$isDebug
+      $shouldProcess = $PSCmdlet.ShouldProcess($Env:COMPUTERNAME, 
+        "Remove original directories in $Path")
+      if ($shouldProcess) {
+        Get-ChildItem -Path $Path -Directory | Remove-Item -Recurse -Force `
+          -Verbose:$(Test-Verbose -Parameters $PSBoundParameters) `
+          -Debug:$(Test-Debug -Parameters $PSBoundParameters)
+      }
     }
   }
   catch {
