@@ -40,10 +40,8 @@ function Compress-Directories {
         -Debug:$(Test-Debug -Parameters $PSBoundParameters)
     }
     else {
-      Test-Command -Command '7z' 
       $sz = Get-7ZipExecutablePath
       Write-Verbose "Using 7zip for $Extension"
-      # ? Maybe it would be better to add 7zip to the path if it's not already there?
       Get-ChildItem -Path $Path -Directory | ForEach-Object {
         & "$sz" a $("$($_.FullName).$Extension") $_.FullName
       }
