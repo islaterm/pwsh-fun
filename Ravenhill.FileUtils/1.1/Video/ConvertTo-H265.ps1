@@ -1,52 +1,23 @@
 Import-Module Ravenhill.ScriptUtils
 Import-Module Ravenhill.Exceptions
 
+# TODO: Add support for input files or folders.
+# TODO: Add support for output files or folders.
+# TODO: Add support for recursive search.
+# TODO: Add support for ignoring files that already have the H.265 extension.
+# TODO: Add support for ignoring files by name
+# TODO: Add extension check
+# TODO: Add ffmpeg check
 function ConvertTo-H265 {
-  [CmdletBinding(ConfirmImpact = 'High', SupportsShouldProcess)]
+  [CmdletBinding()]
   param (
-    [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
-    [Alias('Path', 'i')]
     [string]
-    $InputFile,
-    [Parameter()]
-    [ValidateNotNullOrEmpty()]
-    [Alias('o', 'Destination')]
-    [string]
-    $OutputFile
+    $Path = '.'
   )
-  begin {
-    Write-Debug 'ConvertTo-H265: begin'
-    try {
-      Test-Ffmpeg
+  Get-ChildItem $Path | ForEach-Object {
+    if (-not ("265" -in $_.Name)) {
+      ffmpeg -i $_ -vcodec libx265 -crf 28 "$Path\$($_.BaseName).h265.mkv"
     }
-    catch [NotInstalledException] {
-      Write-Error $_.Message
-      $PSCmdlet.ThrowTerminatingError($_)
-    }
-  }
-  process {
-    Write-Debug 'ConvertTo-H265: process'
-    Write-Debug "Input file: $InputFile"
-
-    Test-VideoExtension -Path $InputFile -IfFalse {
-      throw [IllegalArgumentException] "Input file is not a video file: $InputFile"
-    }
-
-    $resolvedFile = Get-Item $InputFile
-    if (-not $OutputFile) {
-      $OutputFile = $InputFile.Replace($resolvedFile.Extension, '.h265.mp4')
-    }
-    Write-Debug "Output file: $OutputFile"
-    # 2 - Check if the output file exists
-    # 3 - Input format (regex)
-    # 4 - ffmpeg command
-    ffmpeg.exe -i "$InputFile" -vcodec libx265 -crf 28 "$OutputFile"
-    # 5 - Cleanup
-  }
-  end {
-    # Write-Debug 'ConvertTo-H265: end'
-    # Write-Verbose 'ConvertTo-H265: done'
   }
   <#
     .SYNOPSIS
