@@ -12,7 +12,7 @@
   RootModule        = 'Ravenhill.FileUtils.psm1'
 
   # Version number of this module.
-  ModuleVersion     = '1.1'
+  ModuleVersion     = '1.2'
 
   # ID used to uniquely identify this module
   GUID              = '7cc0736f-5c85-48a9-b9d2-19bec5fdd433'
