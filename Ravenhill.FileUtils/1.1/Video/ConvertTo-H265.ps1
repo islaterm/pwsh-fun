@@ -8,6 +8,7 @@ Import-Module Ravenhill.Exceptions
 # TODO: Add support for ignoring files by name
 # TODO: Add extension check
 # TODO: Add ffmpeg check
+# TODO: Add should process/check/cleanup
 function ConvertTo-H265 {
   [CmdletBinding()]
   param (
