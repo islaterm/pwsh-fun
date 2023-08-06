@@ -1,24 +1,42 @@
 Import-Module Ravenhill.ScriptUtils
 Import-Module Ravenhill.Exceptions
 
+# The original ConfirmPreference value.
+$originalConfirmPreference = $ConfirmPreference
+# The valid video extensions.
+$videoExtensions = @(
+  '.mp4', '.mkv', '.avi', '.wmv', '.mov', '.flv', '.webm', '.mpg', '.mpeg', '.m4v', '.m2v', '.3gp'
+)
+
 # TODO: Add support for input files or folders.
 # TODO: Add support for output files or folders.
 # TODO: Add support for recursive search.
 # TODO: Add support for ignoring files that already have the H.265 extension.
 # TODO: Add support for ignoring files by name
-# TODO: Add extension check
 # TODO: Add ffmpeg check
 # TODO: Add should process/check/cleanup
 function ConvertTo-H265 {
-  [CmdletBinding()]
+  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
   param (
+    # The path to the file or folder to convert.
     [string]
     $Path = '.'
   )
-  Get-ChildItem $Path | ForEach-Object {
-    if (-not ("265" -in $_.Name)) {
-      ffmpeg -i $_ -vcodec libx265 -crf 28 "$Path\$($_.BaseName).h265.mkv"
+  try {
+    if (-not (Test-Path $Path)) {
+      throw [System.IO.FileNotFoundException] "The path '$Path' does not exist."
     }
+    $videoFiles = Get-ChildVideos -Path $Path
+    Write-Debug "Video files: $videoFiles"
+    $shouldProcess = $PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", 
+      "Convert video files to H.265 format")
+    if ($shouldProcess) {
+      $ConfirmPreference = 'None'
+      Convert-VideoFilesToH265 -Files $videoFiles -OutputPath $Path
+    }
+  }
+  finally {
+    $ConfirmPreference = $originalConfirmPreference
   }
   <#
     .SYNOPSIS
@@ -26,64 +44,92 @@ function ConvertTo-H265 {
   #>
 }
 
-
-function Script:Test-VideoExtension {
+function Script:Get-ChildVideos {
   [CmdletBinding()]
   param (
+    # The directory path where the videos will be searched
     [Parameter(Mandatory)]
-    [ValidateNotNullOrEmpty()]
     [string]
-    $Path,
-    [scriptblock]
-    $IfTrue,
-    [scriptblock]
-    $IfFalse
+    $Path
   )
-  $resolvedFile = Get-Item -Path (Resolve-Path $InputFile)
-  Write-Debug "Resolved path: $resolvedFile"
-  if ($resolvedFile.Extension -in $videoExtensions) {
-    Write-Debug "The file '$resolvedFile is a video file."
-    & $IfTrue
-  }
-  else {
-    Write-Debug "Format '.${$resolvedFile.Extension}' is not a video file."
-    & $IfFalse
-  }
-  return $resolvedFile
-}
 
-function Script:Test-Ffmpeg {
-  [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
-  param ()
-  $ffmpeg = 'ffmpeg'
-  Test-Command -Command $ffmpeg -IfFalse {
-    Write-Warning "$ffmpeg is not installed. The function will now try to install it."
-    if ($PSCmdlet.ShouldProcess("$Env:COMPUTERNAME", "Install $ffmpeg")) {
-      Install-Ffmpeg
-    }
-    else {
-      throw [NotInstalledException]::new(
-        "$ffmpeg is not installed. Please install it and try again.")
-    }
-  }
-}
+  $resolvedPath = Resolve-Path $Path
+  Write-Debug "Resolved path: $resolvedPath"
+  
+  $children = Get-ChildItem $resolvedPath
+  Write-Debug "Children: $children"
 
-function Script:Install-Ffmpeg {
-  [CmdletBinding()]
-  param ()
-  Test-Command -Command 'choco' -IfTrue {
-    choco.exe install $ffmpeg
-  } -IfFalse {
-    throw [NotInstalledException]::new(
-      'Chocolatey is not installed. Please install it and try again.')
+  $children | Where-Object { 
+    Write-Verbose "Checking file: $_"
+    Write-Debug "Extension: $($_.Extension)"
+    $_.Extension -in $videoExtensions 
   }
+
   <#
-    .DESCRIPTION
-      Install ffmpeg using Chocolatey. If Chocolatey is not installed, the function will throw an 
-      exception.
+  .SYNOPSIS
+    Returns child items from a specified path that are video files.
+
+  .DESCRIPTION
+    The Get-ChildVideos function retrieves all child items from a given directory path
+    that have extensions matching a predefined list of video extensions.
+
+  .PARAMETER Path
+    The directory path where the video files will be searched.
+
+  .EXAMPLE
+    Get-ChildVideos -Path "C:\videos\"
+    This example retrieves all video files in the "C:\videos\" directory.
   #>
 }
 
-$videoExtensions = @(
-  'mp4', 'mkv', 'avi', 'mov', 'wmv', 'flv', 'webm', 'mpg', 'mpeg', 'vob', 'ogv', 'ogg', '3gp', 
-  '3g2', '3gpp', '3gpp2', 'asf', 'asx', 'f4v', 'f4p', 'f4a', 'f4b')
+function Script:Convert-VideoFilesToH265 {
+  [CmdletBinding()]
+  param (
+    # An array of FileSystemInfo objects representing video files to convert
+    [Parameter(Mandatory)]
+    [System.IO.FileSystemInfo[]]
+    $Files,
+    
+    # The directory where the converted videos will be saved
+    [Parameter(Mandatory)]
+    [string]
+    $OutputPath
+  )
+
+  $Files | ForEach-Object {
+    if (-not ($_.Name -like '*.h265.*') -or `
+        -not ($_.Name -like '*.x265.*')) {
+      Write-Debug "Converting file: $_"
+      ffmpeg -i $_ -vcodec libx265 -crf 28 "$OutputPath\$($_.BaseName).h265.mkv"
+    }
+    else {
+      Write-Debug "Skipping file: $_"
+    }
+  }
+
+  <#
+  .SYNOPSIS
+    Converts a list of video files to H265 format using ffmpeg.
+  
+  .DESCRIPTION
+    The Convert-VideoFilesToH265 function converts a list of video files to H265 format. 
+    It uses the ffmpeg command-line tool to perform the conversion. The function skips 
+    any files that already appear to be in H265 format.
+  
+  .PARAMETER VideoFiles
+    An array of FileSystemInfo objects that represent the video files to be converted.
+  
+  .PARAMETER OutputPath
+    The directory where the converted videos will be saved.
+
+  .NOTES
+    This command assumes that ffmpeg is installed and available in the current path, and that the
+    input files are in a format that ffmpeg can convert to H265.
+  
+  .EXAMPLE
+    $files = Get-ChildItem -Path "C:\videos\" -File
+    Convert-VideoFilesToH265 -VideoFiles $files -OutputPath "C:\converted\"
+    This example converts all files in the "C:\videos\" directory to H265 format and 
+    saves them in the "C:\converted\" directory.
+  #>
+}
