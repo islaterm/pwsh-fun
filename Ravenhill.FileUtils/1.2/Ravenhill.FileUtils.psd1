@@ -35,7 +35,8 @@
   ScriptsToProcess  = @(
     'ConvertTo-Icon.ps1', 
     'Ravenhill.FileUtils_aux', 
-    'Video\ConvertTo-H265.ps1'
+    'Video\ConvertTo-H265.ps1',
+    'Audio\ConvertTo-Mp3.ps1'
   )
 
   # Type files (.ps1xml) to be loaded when importing this module
@@ -54,11 +55,12 @@
     'ConvertTo-Icon', 
     'ConvertTo-Jpeg', 
     'Remove-EmptyDirectories',
-    'Remove-FilesByExtension'
+    'Remove-FilesByExtension',
+    'ConvertTo-Mp3'
   )
 
   # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-  CmdletsToExport   = @()
+  CmdletsToExport = @()
 
   # Variables to export from this module
   VariablesToExport = @()
